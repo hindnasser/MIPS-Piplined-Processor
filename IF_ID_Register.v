@@ -5,7 +5,7 @@ module IF_ID_Register(OpCode, PCplus4Out, instruction, IF_Flush, clk, PCplus4);
 		
 //output
 	output reg [5:0] OpCode;
-	inout [31:0] PCplus4Out;
+	output reg [31:0] PCplus4Out;
 	
 	always @(posedge clk) 
 		begin
