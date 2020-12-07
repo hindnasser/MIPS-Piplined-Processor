@@ -9,7 +9,7 @@ module IF_ID_Register(instructionOut, PCplus4Out, instructionIn, IF_Flush, clk, 
 	
 	always @(posedge clk) 
 		begin
-//To make a nop
+//To fetch a nop
 			if(IF_Flush == 1)
 				begin
 					instructionOut = 32'b0 ;
