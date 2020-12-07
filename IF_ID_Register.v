@@ -1,10 +1,10 @@
-module IF_ID_Register(OpCode, PCplus4Out, instruction, IF_Flush, clk, PCplus4);
+module IF_ID_Register(instructionOut, PCplus4Out, instructionIn, IF_Flush, clk, PCplus4);
 //input
-	input [31:0] instruction, PCplus4;
+	input [31:0] instructionIn, PCplus4;
 	input IF_Flush, clk;
 		
 //output
-	output reg [5:0] OpCode;
+	output reg [31:0] instructionOut;
 	output reg [31:0] PCplus4Out;
 	
 	always @(posedge clk) 
@@ -12,16 +12,15 @@ module IF_ID_Register(OpCode, PCplus4Out, instruction, IF_Flush, clk, PCplus4);
 //To make a nop
 			if(IF_Flush == 1)
 				begin
-					OpCode = 6'h0;
+					instructionOut = 32'b0 ;
 					PCplus4Out = PCplus4;
 				end
 //To fetch the next instruction		
 			else 
 				begin
-					OpCode = instruction [31:26];
+					instructionOut = instructionIn;
 					PCplus4Out = PCplus4;
 				end
 		end
 	
 endmodule
-
