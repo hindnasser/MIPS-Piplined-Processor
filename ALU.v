@@ -15,13 +15,21 @@ module ALU (Result, Zero, Overflow, Op1, Op2, operation, shamt, clk);
 	always @ (posedge clk) begin
 		case (operation)
 
-			// unsigned addition 
-			4'h0:
-				begin
-					Result <= Op1 + Op2;
-					Zero <= 0;
-					Overflow <= 0;
-				end
+//			// unsigned addition 
+//			4'h0:
+//				begin
+//					Result <= Op1 + Op2;
+//					Zero <= 0;
+//					Overflow <= 0;
+//				end
+
+			// no Operation 
+				4'h0:
+					begin
+						Result <= 0;
+						Zero <= 0;
+						Overflow <= 0;
+					end
 				
 			//shift lift 16 for Op2
 			4'h11:
@@ -59,17 +67,17 @@ module ALU (Result, Zero, Overflow, Op1, Op2, operation, shamt, clk);
 					Overflow <= 0;
 				end
 				
-			//Unsigned Subtract
-			4'h6:
-				begin
-					Result <= Op2 - Op1;
-					//to detect the zero value
-					if(Result == 32'h0)
-						Zero <= 1;
-						
-					else Zero <= 0;
-					Overflow <= 0;
-				end
+//			//Unsigned Subtract
+//			4'h6:
+//				begin
+//					Result <= Op2 - Op1;
+//					//to detect the zero value
+//					if(Result == 32'h0)
+//						Zero <= 1;
+//						
+//					else Zero <= 0;
+//					Overflow <= 0;
+//				end
 				
 				
 			//Signed Subtract
