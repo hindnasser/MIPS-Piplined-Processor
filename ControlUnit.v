@@ -43,7 +43,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 1;
 				Issigned <= 1;
-				ALUop <= 4'h0;
+				ALUop <= 4'h4;
 			end
 			
 		//Load Upper Immediate
@@ -77,7 +77,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 1;
 				Issigned <= 1;
-				ALUop <= 4'h0;
+				ALUop <= 4'h4;
 			end
 			
 		//Store Byte
@@ -94,7 +94,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 1;
 				Issigned <= 1;
-				ALUop <= 4'h0;
+				ALUop <= 4'h4;
 			end
 				
 		//store word
@@ -110,7 +110,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 1;
 				Issigned <= 1;
-				ALUop <= 4'h0;
+				ALUop <= 4'h4;
 			end
 			
 		//R instructions
@@ -147,22 +147,22 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				ALUop <= 4'h4;
 			end
 		
-		//addiu
-		6'h8:
-			begin
-				RegDst <= 0; 
-				RegWrite <= 1;
-				MemtoReg <= 0;
-				Jump <= 0;
-				JmpandLink <= 0;
-				MemRead <= 0;
-				MemWrite <= 0;
-				BranchEqual <= 0;
-				BranchnotEqual <= 0;
-				ALUSrc <= 1;
-				Issigned <= 0;
-				ALUop <= 4'h0;
-			end
+//		//addiu
+//		6'h8:
+//			begin
+//				RegDst <= 0; 
+//				RegWrite <= 1;
+//				MemtoReg <= 0;
+//				Jump <= 0;
+//				JmpandLink <= 0;
+//				MemRead <= 0;
+//				MemWrite <= 0;
+//				BranchEqual <= 0;
+//				BranchnotEqual <= 0;
+//				ALUSrc <= 1;
+//				Issigned <= 0;
+//				ALUop <= 4'h0;
+//			end
 
 		//andi
 		6'hc:
@@ -229,7 +229,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 0;
 				Issigned <= 0;
-				ALUop <= 4'h0;
+				ALUop <= 4'h4;
 			end
 				
 		//Jump
@@ -246,7 +246,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 0;
 				Issigned <= 0;
-				ALUop <= 4'h0;
+				ALUop <= 4'h4;
 			end
 				
 		//Or immediate
