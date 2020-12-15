@@ -17,7 +17,7 @@ module Top (PC_value);
 	SignExtension se (SignedImmediate, instruction[15:0]);
 	ZeroExtension ze (UnsignedImmediate, instruction[15:0]);
 	ShiftLeft2 sl (ShiftedLeft2, SignedImmediate);
-	AddressAdder aa (Address, PCplus4, Shifted);
+	AddressAdder aa (Address, PCplus4, ShiftedLeft2);
 	
 	//Branch address adder
 	// sign extension
