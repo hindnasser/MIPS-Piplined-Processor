@@ -1,11 +1,13 @@
-module regFile(reg1, reg2, reg3, ReadData1, ReadData2, clk, ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegWrite);
+module regFile(reg1, reg2, reg3, ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB_Data, RegWrite);
 //input
-	input [4:0] ReadRegister1, ReadRegister2, WriteRegister;
+	input [4:0] IF_ID_Rs, IF_ID_Rt, WB_DstReg;
 	input clk, RegWrite;
-	input [31:0] WriteData;
+	input [31:0] WB_Data;
+	
 //output	
 	output reg [31:0] ReadData1, ReadData2;
-	output reg [31:0]reg1,reg2,reg3;
+	output reg [31:0]reg1,reg2;
+	output [31:0] reg3;
 	
 //initializing registers
 	reg [31:0] registers_i[31:0];	
@@ -22,24 +24,21 @@ module regFile(reg1, reg2, reg3, ReadData1, ReadData2, clk, ReadRegister1, ReadR
 //writing data to the register
 			always @(posedge clk)
 				begin
-					if(RegWrite && WriteRegister!=0)
+					if(RegWrite && WB_DstReg!=0)
 						begin
-							registers_i[WriteRegister] <= WriteData;
-							//here
-							reg3 <= registers_i[6];
+							registers_i[WB_DstReg] <= WB_Data;
 						end
 				end
 						
 //reading the data
 	always @(negedge clk)
 		begin
-			ReadData1 <= registers_i[ReadRegister1];
-			ReadData2 <= registers_i[ReadRegister2];
+			ReadData1 <= registers_i[IF_ID_Rs];
+			ReadData2 <= registers_i[IF_ID_Rt];
 			reg1 <= registers_i[1];
          reg2 <= registers_i[2];
-	      
 		end
-	
+	assign reg3 = registers_i[3];
 endmodule
 ////////////////////////////////////////////////////
 ////module clock(clk);
