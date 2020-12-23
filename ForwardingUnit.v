@@ -1,7 +1,7 @@
 module ForwardingUnit (forwardOp1, forwardOp2, ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite, clk);
 
 //input
-	input [31:0] ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, MEM_WB_Rd;
+	input [4:0] ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, MEM_WB_Rd;
 	input EXE_MEM_RegWrite, MEM_WB_RegWrite, clk;
 	
 //output
