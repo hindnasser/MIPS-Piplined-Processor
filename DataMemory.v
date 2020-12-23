@@ -1,11 +1,11 @@
-module DataMemory (MemReadData, MemAddress, MemWriteData, MemRead, MemWrite, clk);
+module DataMemory (Mem_Result, EXE_MEM_Address, EXE_MEM_Rt, MemRead, MemWrite, clk);
 
 //input
-	input [31:0] MemAddress, MemWriteData;
+	input [31:0] EXE_MEM_Address, EXE_MEM_Rt;
 	input MemRead, MemWrite, clk;
 	
 //output
-	output reg [31:0] MemReadData;
+	output reg [31:0] Mem_Result;
 	
 //actual address
 	wire [9:0] address;
@@ -32,16 +32,16 @@ module DataMemory (MemReadData, MemAddress, MemWriteData, MemRead, MemWrite, clk
 		end
 	
 // assigning a value to actual address
-	assign address = MemAddress [9:0];
+	assign address = EXE_MEM_Address [9:0];
 	
 // Write to the memory
 	always @ (posedge clk && MemWrite) begin
 //		if(MemWrite == 1)
 //			begin
-				mem[address] <= MemWriteData[7:0];
-				mem[address-1] <= MemWriteData[15:8];
-				mem[address-2] <= MemWriteData [23:16];
-				mem[address-3] <= MemWriteData [31:17];
+				mem[address] <= EXE_MEM_Rt[7:0];
+				mem[address-1] <= EXE_MEM_Rt[15:8];
+				mem[address-2] <= EXE_MEM_Rt [23:16];
+				mem[address-3] <= EXE_MEM_Rt [31:17];
 //			end 
 end
 		
@@ -49,58 +49,8 @@ end
 	always @(negedge clk && MemRead)begin
 //		if(MemRead == 1) 
 //			begin
-				MemReadData = { mem[address-3], mem[address-2], mem[address-1], mem[address]};
+				Mem_Result = { mem[address-3], mem[address-2], mem[address-1], mem[address]};
 //			end 
 end
 	
 endmodule
-
-//module clock(clk);
-//	output clk;
-//	reg clk;
-//	initial begin
-//		clk <= 0;
-//	end
-//	always
-//		begin
-//		#50 
-//		clk <= ~clk;	
-//	end
-//endmodule
-//
-//module test;
-//reg [31:0] add , data;
-//wire [31:0] memread;
-//reg memreads,memwrite;
-//wire clk;
-//
-//
-//clock c1(clk);
-//DataMemory rf(memread, add, data, memreads, memwrite, clk);
-//
-//initial
-//begin
-//add <= 30 ; data = 100 ; memreads = 1 ; memwrite = 0 ; 
-//#49 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//add <= 30 ; data = 6 ; memreads = 1 ; memwrite = 1 ; 
-//#50 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//add <= 7 ; data = 100 ; memreads = 1 ; memwrite = 1 ; 
-//#75 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//add <= 7 ; data = 200 ; memreads = 1 ; memwrite = 1 ; 
-//#150 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//add <= 7 ; data = 200 ; memreads = 1 ; memwrite = 1 ; 
-//#160 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//add <= 30 ; data = 200 ; memreads = 1 ; memwrite = 0 ; 
-//#250 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//add <= 30 ; data = 450 ; memreads = 1 ; memwrite = 1 ; 
-//#251 $display("ADD= %b ",add," Data = %b",data, " dataread = %b ",memread);
-//
-//end
-//endmodule
-
