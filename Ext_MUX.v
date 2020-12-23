@@ -5,7 +5,7 @@ module Ext_MUX (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned, clk)
 	input Issigned, clk;
 	
 // output
-	output [31:0] ExtendedImm;
+	output reg [31:0] ExtendedImm;
 	
 	always @(posedge clk)
 		begin
