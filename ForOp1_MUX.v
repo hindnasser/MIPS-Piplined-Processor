@@ -1,0 +1,24 @@
+module ForOp1_MUX (Op1, ID_EXE_Rs, WB_Data, EXE_MEM_Result, forwardOp1, clk);
+
+// input 
+	input [31:0] ID_EXE_Rs, WB_Data, EXE_MEM_Result;
+	input [1:0] forwardOp1;
+	input clk;
+	
+// output
+	output reg [31:0] Op1;
+	
+	always @(posedge clk)
+		begin
+			if (forwardOp1 == 00)
+				Op1 = ID_EXE_Rs;
+			else if(forwardOp1 == 01)
+				Op1 = WB_Data;
+			else if(forwardOp1 == 10)
+				Op1 = EXE_MEM_Result;
+		end
+		
+endmodule
+
+		
+	
