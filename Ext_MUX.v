@@ -1,4 +1,4 @@
-module Ext_MUX (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned, clk)
+module Ext_MUX (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned, clk);
 
 // input 
 	input [31:0] SignedImmediate, UnsignedImmediate;
