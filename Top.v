@@ -7,91 +7,138 @@ module Top (PC_value);
 	wire clk;
 	clock c(clk);
 	
-// IF Stage
-	wire [31:0] instruction, PCplus4, PCplus4OutIF, instructionOut;
-
-	PCAdder pc1 (PCplus4, PC_value, 4);
-	instructionMemory imem (instruction, PC_value);
+// wires
+	// IF Stage
+	wire [31:0] instruction, PCplus4, program_counter, Mem_BranchAddress, PCSrc;
+	wire PC_Src;
 	
+	//IF_ID_Register
+	wire [4:0] IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Shamt;
+	wire [5:0] IF_ID_Func, IF_ID_Opcode;
+	wire [15:0] IF_ID_Immediate;
+	wire [25:0] IF_ID_Address;
+	wire [31:0] IF_ID_PCplus4Out;
+	
+	// ID Stage
+	wire [31:0] SignedImmediate, UnsignedImmediate, ReadData1, ReadData2, ExtendedImm;					
+	wire RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned;
+	
+	// ID_EXE_Register
+	wire ID_EXE_RegDst, ID_EXE_RegWrite, ID_EXE_MemtoReg, ID_EXE_JmpandLink, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual,
+		  ID_EXE_ALUSrc;
+	wire [5:0] ID_EXE_Func;
+	wire [31:0] ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EXE_ExtendedImm;
+	wire [4:0] ID_EXE_Shamt, ID_EXE_Rd; 
+	// EXE Stage
+	wire [31:0] ALUOut_EXEC, Op2Srcs, Op1, Op2, BranchAdd, EXE_BranchAddress;
+	wire EXE_Zero, Overflow, forwardOp1, forwardOp2;
+	wire [4:0] EXE_DstReg;
+	
+	// EXE_MEM_Register
+	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt;
+	wire EXE_MEM_Zero, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite; 
+	wire [4:0] EXE_MEM_DstReg, EXE_MEM_Rd;
+	
+	// MEM Stage
+	wire [31:0] MEM_Result;
+	wire BranchEqualResult, BranchnotEqualResult;
+	
+	// MEM_ WB_Register
+	wire [31:0] MEM_WB_MemData, MEM_WB_ALUData;
+	wire [4:0] MEM_WB_Rd, MEM_WB_DstReg;
+	wire MEM_WB_MemtoReg, MEM_WB_RegWrite;
+	
+	// WB Stage
+	wire [31:0] WB_Data;
+	
+// IF Stage
+	PC_MUX pcmux (PCSrc, PC_value, Mem_BranchAddress, PC_Src);
+	PC_Reg pcreg (program_counter, PCSrc);
+	PCAdder pcadd (PCplus4, program_counter);
+	instructionMemory imem (instruction, program_counter);
+
 // IF_ID_Register
-	IF_ID_Register ifidr (instructionOut, PCplus4OutIF, instruction, clk, PCplus4); 
+	IF_ID_Register ifidr (IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, IF_ID_Func, IF_ID_Immediate,
+								 IF_ID_Address, IF_ID_PCplus4Out, instruction, clk, PCplus4); 
 	
 // ID Stage
-	wire [31:0] Address, SignedImmediate, UnsignedImmediate, ShiftedLeft2, ReadData1, ReadData2, WriteData, 
-					PCplus4OutID, ReadReg1Out, ReadReg2Out, SignExtendedValueOut,reg1,reg2,reg3;
-					
-	wire RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, MemtoRegOut,
-		  RegDstOut, RegWriteOut, JmpandLinkOut, MemReadOut, MemWriteOut, BranchEqualOut, BranchnotEqualOut;
-		  
-	wire [5:0] func;
-	
-	ControlUnit cu (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, instructionOut[31:26]);
-	SignExtension se (SignedImmediate, instruction[15:0]);
-	ZeroExtension ze (UnsignedImmediate, instruction[15:0]);
-	ShiftLeft2 sl (ShiftedLeft2, SignedImmediate);
-	AddressAdder aa (Address, PCplus4, ShiftedLeft2);
-	wire [31:0] Result;
-	assign WriteData = Result;
-	regFile rf (reg1,reg2,reg3,ReadData1, ReadData2, clk, instructionOut[25:21], instructionOut[20:16], 5'h6, WriteData, RegWrite);//here
-	//Branch address adder
-	// sign extension
-	//zero extensoin
-	//register file
+	ControlUnit cu (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, IF_ID_Opcode);
+	SignExtension se (SignedImmediate, IF_ID_Immediate);
+	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate );
+	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned, clk);
+	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB_Data, RegWrite);//here
 	// floating register file
-	//controlunit
+	// Rs_MUX
+	// Rs_MUX rsmux (ID_Rs, ReadData1, FPReadData1, floatop, clk);
+	// Rt_MUx
+	// Rt_MUX rtmux (ID_Rt, ReadData2, FPReadData2, floatop, clk);
 	
 // ID_EXE_Register
-	ID_EXE_Register idexer (func, PCplus4OutID, ReadReg1Out, ReadReg2Out, SignExtendedValueOut, RegDstOut, RegWriteOut, MemtoRegOut, 
-                        JmpandLinkOut, MemReadOut, MemWriteOut, BranchEqualOut, BranchnotEqualOut, 0, instructionOut[5:0], PCplus4OutIF, 
-								instructionOut[25:21], instructionOut[20:16], SignedImmediate, RegDst, RegWrite, MemtoReg, JmpandLink, MemRead, 
-								MemWrite, BranchEqual, BranchnotEqual, clk);
-								
+	ID_EXE_Register idexer (ID_EXE_Func, ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_ExtendedImm, ID_EXE_Shamt, ID_EXE_RegDst, ID_EXE_RegWrite, 
+	                        ID_EXE_MemtoReg, ID_EXE_JmpandLink, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, ID_EXE_ALUop, 
+									ID_EXE_ALUSrc, IF_ID_Shamt, IF_ID_Func, IF_ID_PCplus4, ReadData1, ReadData2, IF_ID_Rd, ExtendedImm, RegDst, RegWrite, MemtoReg,
+									// change ReadData1 and ReadData2 to ID_Rs and ID_Rt after adding floating point registerFile
+									JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, clk);
+												
 // EXE Stage
-	
-	wire Zero, Overflow;
-	ALU alu (Result, Zero, Overflow, ReadData1, ReadData2, 4, 5'b0, clk);//here
-	
-// EXE_MEM_Register
+	Op2Src_MUX op2srcmux (Op2Src, ID_EXE_Rt, ID_EXE_ExtendedImm, ID_EXE_ALUSrc, clk);
+	ForOp1_MUX forop1mux (Op1, ID_EXE_Rs, WB_Data, EXE_MEM_Result, forwardOp1, clk);
+	ForOp2_MUX forop2mux (Op2, Op2Src, WB_Data, EXE_MEM_Result, forwardOp2, clk);
+	DstReg_MUX dstregmux (EXE_DstReg, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RegDst, clk);
 
+	AddressAdder addadd (EXE_BranchAddress, ID_EXE_PCplus4, BranchAdd);
+	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, 4'h4, ID_EXE_Shamt, clk);//here
+	// change nmber to operation after adding the alu control
+	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite, clk);
+	// alu controlUnitd
+	 
+  
+// EXE_MEM_Register
+	EXE_MEM_Register exememr(EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_DstReg, EXE_MEM_Rd, EXE_MEM_Zero, EXE_MEM_Rt, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual,
+								    EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, EXE_BranchAddress, ALUOut_EXEC, EXE_DstReg, ID_EXE_Rd, ID_EXE_Rt,
+								    EXE_Zero, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, clk);
 
 // MEM Stage
-
+	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, clk);
+	BranchEqualAnd beand (BranchEqualResult, EXE_MEM_Zero, EXE_MEM_BranchEqual);
+	BranchnotEqualAnd bneand(BranchnotEqualResult, EXE_MEM_Zero, EXE_MEM_BranchnotEqual);
+	AddressOr addor (PC_Src, BranchEqualResult, BranchnotEqualResult);
+	
+// MEM_WB_Register
+	MEM_WB_Register memwbreg (MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_Rd, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
+						           EXE_MEM_Rd, EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, clk);
+   	
 // WB Stage
+	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, MemtoReg, clk);
 	
 endmodule
 
-module test;
+module tst_2; 
 	reg [31:0]PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 108;	  
+		PC_VALUE_ <= 200;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
-	
-	if (cycle == 5)
+
+	if (cycle == 1)
 	begin
 		$display("cycle: %d" , cycle);
-		$display("PC: %d",top.PCplus4);				   
-		$display("ALUOut_EXEC: %d" , top.Result);
-		$display("R[S0]: %d" , top.reg1, " The correct value is 4");
-		$display("R[S1]: %d" , top.reg2, " The correct value is 8");		
-		$display("R[S2]: %d" , top.reg3, " The correct value is 12");		
-//		$display("R[S3]: %d" , top.regFile.registers_i[3], " The correct value is 16");
-//		$display("R[S4]: %d" , top.regFile.registers_i[4], " The correct value is 20");
-//		$display("R[S5]: %d" , top.regFile.registers_i[5], " The correct value is 24");
-//		$display("R[S6]: %d" , top.regFile.registers_i[6], " The correct value is 28");
-//		$display("R[S7]: %d" , top.regFile.registers_i[7], " The correct value is 32");
-//		$display("R[S8]: %d" , top.regFile.registers_i[8], " The correct value is 36");
-//		$display("R[S9]: %d" , top.regFile.registers_i[9], " The correct value is 40");
-	
-		
+		$display("PC: %d",top.program_counter);				   
+		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
+		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 5");
+		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
+		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
+		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
+		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 15");
+		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is -2  *** Check reporesentation");		
+				
 		
 		end
+			cycle = cycle + 1;
 		
-		
-	cycle = cycle + 1;
 		
 	end
 endmodule
