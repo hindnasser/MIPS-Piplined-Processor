@@ -1,13 +1,12 @@
-module PCAdder (PCplus4, PC_value, four);
+module PCAdder (PCplus4, PC);
 
 // input 
-	input [31:0] PC_value;
-	input [2:0] four;
+	input [31:0] PC;
 	
 // output
 	output [31:0] PCplus4;
 	
-	assign PCplus4 = PC_value + 4;
+	assign PCplus4 = PC + 4;
 	
 	
 endmodule
