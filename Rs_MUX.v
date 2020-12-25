@@ -1,7 +1,7 @@
-module Rs_MUX (ID_Rs, ReadRegister1, FPReadRegister1, floatop, clk);
+module Rs_MUX (ID_Rs, ReadData1, FPReadData1, floatop, clk);
 
 // input 
-	input [31:0] ReadRegister1, FPReadRegister1;
+	input [31:0] ReadData1, FPReadData1;
 	input floatop, clk;
 	
 // output 
@@ -10,9 +10,9 @@ module Rs_MUX (ID_Rs, ReadRegister1, FPReadRegister1, floatop, clk);
 	always @(posedge clk)
 		begin
 			if(floatop == 0)
-				ID_Rs = ReadRegister1;
+				ID_Rs = ReadData1;
 			else if (floatop == 1)
-				ID_Rs = FPReadRegister1;
+				ID_Rs = FPReadData1;
 		end
 		
 endmodule
