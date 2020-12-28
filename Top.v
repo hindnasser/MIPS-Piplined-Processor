@@ -57,20 +57,21 @@ module Top (PC_value);
 	wire [31:0] WB_Data;
 	
 // IF Stage
-	PC_MUX pcmux (PCSrc, PC_value, Mem_BranchAddress, 0, clk);
-	PC_Reg pcreg (program_counter, PCSrc);
+	
+	PC_MUX pcmux (PCSrc, PC_value, Mem_BranchAddress, 0);
+	PC_Reg pcreg (program_counter, PCSrc, clk);
 	PCAdder pcadd (PCplus4, program_counter);
 	instructionMemory imem (instruction, program_counter);
 
 // IF_ID_Register
 	IF_ID_Register ifidr (IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, IF_ID_Func, IF_ID_Immediate,
-								 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4); 
+								 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4, clk); 
 	
 // ID Stage
 	ControlUnit cu (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, IF_ID_Opcode);
 	SignExtension se (SignedImmediate, IF_ID_Immediate);
-	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate );
-	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned, clk);
+	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
+	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
 	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, RegWrite);//here
 	// floating register file
 	// Rs_MUX
@@ -82,27 +83,27 @@ module Top (PC_value);
 	ID_EXE_Register idexer (ID_EXE_Func, ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RtReg, ID_EXE_RsReg, ID_EXE_ExtendedImm, ID_EXE_Shamt, ID_EXE_RegDst,
 									ID_EXE_RegWrite, ID_EXE_MemtoReg, ID_EXE_JmpandLink, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, 
 									ID_EXE_ALUop, ID_EXE_ALUSrc, IF_ID_Shamt, IF_ID_Func, IF_ID_PCplus4, IF_ID_Rs, IF_ID_Rt, ReadData1, ReadData2, IF_ID_Rd, ExtendedImm,
-									RegDst, RegWrite, MemtoReg, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc);
+									RegDst, RegWrite, MemtoReg, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, clk);
 									// change ReadData1 and ReadData2 to ID_Rs and ID_Rt after adding floating point registerFile
 									
 									
 // EXE Stage
 	Op2Src_MUX op2srcmux (Op2Src, ID_EXE_Rt, ID_EXE_ExtendedImm, ID_EXE_ALUSrc);
-	ForOp1_MUX forop1mux (Op1, ID_EXE_Rs, WB_Data, EXE_MEM_Result, forwardOp1, clk);
-	ForOp2_MUX forop2mux (Op2, Op2Src, WB_Data, EXE_MEM_Result, forwardOp2, clk);
-	DstReg_MUX dstregmux (EXE_DstReg, ID_EXE_RtReg, ID_EXE_Rd, ID_EXE_RegDst, clk);
+	ForOp1_MUX forop1mux (Op1, ID_EXE_Rs, WB_Data, EXE_MEM_Result, forwardOp1);
+	ForOp2_MUX forop2mux (Op2, Op2Src, WB_Data, EXE_MEM_Result, forwardOp2);
+	DstReg_MUX dstregmux (EXE_DstReg, ID_EXE_RtReg, ID_EXE_Rd, ID_EXE_RegDst);
 
 	AddressAdder addadd (EXE_BranchAddress, ID_EXE_PCplus4, BranchAdd);
 	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, 4'h4, ID_EXE_Shamt);//here
 	// change nmber to operation after adding the alu control
-	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_RsReg, ID_EXE_RtReg, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite, clk);
+	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_RsReg, ID_EXE_RtReg, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite);
 	// alu controlUnitd
 	 
   
 // EXE_MEM_Register
 	EXE_MEM_Register exememr(EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_DstReg, EXE_MEM_Rd, EXE_MEM_Zero, EXE_MEM_Rt, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual,
 								    EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, EXE_BranchAddress, ALUOut_EXEC, EXE_DstReg, ID_EXE_Rd, ID_EXE_Rt,
-								    EXE_Zero, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite);
+								    EXE_Zero, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, clk);
 
 // MEM Stage
 	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, clk);
@@ -112,10 +113,10 @@ module Top (PC_value);
 	
 // MEM_WB_Register
 	MEM_WB_Register memwbreg (MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_Rd, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
-						           EXE_MEM_Rd, EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite);
+						           EXE_MEM_Rd, EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, clk);
    	
 // WB Stage
-	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, EXE_MEM_MemtoReg, clk);
+	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, EXE_MEM_MemtoReg);
 	
 endmodule
 

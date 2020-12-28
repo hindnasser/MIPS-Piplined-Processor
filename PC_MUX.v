@@ -1,13 +1,14 @@
-module PC_MUX (PCSrc, PC_value, Mem_BranchAddress, PC_Src, clk);
+module PC_MUX (PCSrc, PC_value, Mem_BranchAddress, PC_Src);
 
 // input 
 	input [31:0] PC_value, Mem_BranchAddress;
-	input PC_Src, clk;
+	input PC_Src;
+	//clk;
 	
 // output 
 	output reg [31:0] PCSrc;
 	
-	always @(posedge clk)
+	always @(*)
 		begin
 			if(PC_Src == 1) 
 				PCSrc = Mem_BranchAddress;

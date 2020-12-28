@@ -1,8 +1,8 @@
-module ForwardingUnit (forwardOp1, forwardOp2, ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite, clk);
+module ForwardingUnit (forwardOp1, forwardOp2, ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite);
 
 //input
 	input [4:0] ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd, MEM_WB_Rd;
-	input EXE_MEM_RegWrite, MEM_WB_RegWrite, clk;
+	input EXE_MEM_RegWrite, MEM_WB_RegWrite;
 	
 //output
 	output reg [1:0] forwardOp1, forwardOp2;
@@ -13,7 +13,7 @@ module ForwardingUnit (forwardOp1, forwardOp2, ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd,
 			forward1 <= 0;
 			forward2 <= 0;
 		end
-	always @(posedge clk) begin
+	always @(*) begin
 		
 //checking for ALU-ALU forwarding conditions
 		if(EXE_MEM_RegWrite && (EXE_MEM_Rd != 4'b0) &&(EXE_MEM_Rd == ID_EXE_Rs)) begin

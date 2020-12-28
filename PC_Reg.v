@@ -1,14 +1,15 @@
-module PC_Reg (PC, PCSrc);
+module PC_Reg (PC, PCSrc, clk);
 
 // input
 	input [31:0] PCSrc;
+	input clk;
 	
 	
 // output
 	output reg [31:0] PC;
 	
-	always @(*)
+	always @(posedge clk)
 
-		PC = PCSrc;
+		PC <= PCSrc;
 	
 endmodule

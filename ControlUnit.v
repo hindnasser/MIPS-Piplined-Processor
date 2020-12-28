@@ -10,7 +10,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 
 	
 //check for the opCode in the instruction and assign the control signals
-	always @ (OpCode) begin
+	always @ (*) begin
 		case(OpCode)
 		
 		default:

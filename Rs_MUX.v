@@ -1,18 +1,18 @@
-module Rs_MUX (ID_Rs, ReadData1, FPReadData1, floatop, clk);
+module Rs_MUX (ID_Rs, ReadData1, FPReadData1, floatop);
 
 // input 
 	input [31:0] ReadData1, FPReadData1;
-	input floatop, clk;
+	input floatop;
 	
 // output 
 	output reg [31:0] ID_Rs;
 	
-	always @(posedge clk)
+	always @(*)
 		begin
 			if(floatop == 0)
-				ID_Rs = ReadData1;
+				ID_Rs <= ReadData1;
 			else if (floatop == 1)
-				ID_Rs = FPReadData1;
+				ID_Rs <= FPReadData1;
 		end
 		
 endmodule

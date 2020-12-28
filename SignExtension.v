@@ -7,12 +7,12 @@ module SignExtension (SignedImmediate, immediate);
 	output reg [31:0] SignedImmediate;
 	
 	always @(*) begin
-		SignedImmediate [15:0] = immediate [15:0];
+		SignedImmediate [15:0] <= immediate [15:0];
 		
 		if(immediate[15]==1)
-			SignedImmediate [31:16] = 16'hFFFF;
+			SignedImmediate [31:16] <= 16'hFFFF;
 		else 
-			SignedImmediate [31:16] = 16'h0000;
+			SignedImmediate [31:16] <= 16'h0000;
 	end
 endmodule
 

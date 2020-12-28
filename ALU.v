@@ -31,12 +31,12 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 						Overflow <= 0;
 					end
 					
-			4'h0:
-					begin
-						EXE_Result <= 0;
-						EXE_Zero <= 0;
-						Overflow <= 0;
-					end
+//			4'h0:
+//					begin
+//						EXE_Result <= 0;
+//						EXE_Zero <= 0;
+//						Overflow <= 0;
+//					end
 				
 			//shift lift 16 for Op2
 			4'hb:

@@ -12,9 +12,9 @@ module Op2Src_MUX (Op2Src, ID_EXE_Rt, ID_EXE_ExtendedImm, ID_EXE_ALUSrc);
 	always @(*)
 		begin
 			if(ID_EXE_ALUSrc == 0)
-				Op2Src = ID_EXE_Rt;
+				Op2Src <= ID_EXE_Rt;
 			if (ID_EXE_ALUSrc == 1)
-				Op2Src = ID_EXE_ExtendedImm;
+				Op2Src <= ID_EXE_ExtendedImm;
 		end
 		
 endmodule

@@ -12,20 +12,20 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 	
 	initial
 		begin
-			registers_i[0]=0;
 			for(i=0;i<32;i=i+1) 
 				begin
 					registers_i[i]=i;
 				end
 		end
+		
 //writing data to the register
-			always @(posedge clk)
-				begin
-					if(RegWrite && WB_DstReg!=0)
-						begin
-							registers_i[WB_DstReg] <= WB_Data;
-						end
-				end
+		always @(posedge clk)
+			begin
+				if(RegWrite && WB_DstReg!=0)
+					begin
+						registers_i[WB_DstReg] <= WB_Data;
+					end
+			end
 						
 //reading the data
 	always @(negedge clk)
