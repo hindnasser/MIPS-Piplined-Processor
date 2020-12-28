@@ -1,17 +1,17 @@
-module DstReg_MUX (EXE_DstReg, ID_EXE_Rt, ID_EXE_Rd, RegDst, clk);
+module DstReg_MUX (EXE_DstReg, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RegDst, clk);
 
 // input 
 	input [4:0] ID_EXE_Rd, ID_EXE_Rt;
-	input RegDst, clk;
+	input ID_EXE_RegDst, clk;
 	
 // output
-	output reg EXE_DstReg;
+	output reg [4:0] EXE_DstReg;
 	
 	always @(posedge clk)
 		begin
-			if(RegDst == 0)
+			if(ID_EXE_RegDst == 0)
 				EXE_DstReg = ID_EXE_Rt;
-			else if (RegDst == 1)
+			else if (ID_EXE_RegDst == 1)
 				EXE_DstReg = ID_EXE_Rd;
 		end
 		

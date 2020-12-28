@@ -6,12 +6,29 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 	
 //output	
 	output reg RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned;
-	output reg[3:0] ALUop;
+	output reg [3:0] ALUop;
 
+	
 //check for the opCode in the instruction and assign the control signals
-	always @ (*) begin
+	always @ (OpCode) begin
 		case(OpCode)
 		
+		default:
+			begin
+				RegDst <= 0; 
+				RegWrite <= 0;
+				MemtoReg <= 0;
+				Jump <= 0;
+				JmpandLink <= 0;
+				MemRead <= 0;
+				MemWrite <= 0;
+				BranchEqual <= 0;
+				BranchnotEqual <= 0;
+				ALUSrc <= 0;
+				Issigned <= 0;
+				ALUop <= 4'h0;
+			end
+			
 		//Flush
 		6'h0:
 			begin
@@ -60,7 +77,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 				BranchnotEqual <= 0;
 				ALUSrc <= 1; //extended
 				Issigned <= 0;
-				ALUop <= 4'h11; //sll 16 for op2 
+				ALUop <= 4'b1011; //sll 16 for op2 
 			end
 			
 		//Load Byte Unsigned

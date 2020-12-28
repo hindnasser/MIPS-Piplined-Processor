@@ -1,8 +1,8 @@
 module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, IF_ID_Func, IF_ID_Immediate,
-	    IF_ID_Address, IF_ID_PCplus4Out, instructionIn, clk, PCplus4);
+	    IF_ID_Address, IF_ID_PCplus4Out, instructionIn, PCplus4);
 //input
 	input [31:0] instructionIn, PCplus4;
-	input clk;
+	//input clk;
 		
 //output
 	output reg [4:0] IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Shamt;
@@ -11,7 +11,7 @@ module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, I
 	output reg [25:0] IF_ID_Address;
 	output reg [31:0] IF_ID_PCplus4Out;
 	
-	always @(posedge clk) 
+	always @(*) 
 		begin
 			IF_ID_Rs = instructionIn[25:21];
 			IF_ID_Rt = instructionIn [20:16];

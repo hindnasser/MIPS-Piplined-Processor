@@ -1,10 +1,10 @@
-module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
+module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 
 // input
 	input [31:0] Op1, Op2;
 	input [3:0] operation;
 	input [4:0] shamt;
-	input clk;
+	//input clk;
 	
 // output
 	output reg [31:0] EXE_Result;
@@ -12,7 +12,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 	
 // cases
 
-	always @ (posedge clk) begin
+	always @ (*) begin
 		case (operation)
 
 //			// unsigned addition 
@@ -24,7 +24,14 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 //				end
 
 			// no Operation 
-				4'h0:
+			default:
+				begin
+						EXE_Result <= 0;
+						EXE_Zero <= 0;
+						Overflow <= 0;
+					end
+					
+			4'h0:
 					begin
 						EXE_Result <= 0;
 						EXE_Zero <= 0;
@@ -32,7 +39,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 					end
 				
 			//shift lift 16 for Op2
-			4'h11:
+			4'hb:
 				begin
 					EXE_Result <= Op2 << 16;
 					EXE_Zero <= 0;
@@ -115,7 +122,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 				end
 				
 			//Set less than
-			4'h12:
+			4'hc:
 				begin
 					if($signed (Op1) < $signed (Op2)) EXE_Result <= 1;
 					else EXE_Result <= 0; 
@@ -124,7 +131,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 				end
 				
 			//Set less than unsigned
-			4'h13:
+			4'hd:
 				begin
 					if( Op1 < Op2) EXE_Result <= 1;
 					else EXE_Result <= 0;
@@ -133,7 +140,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 				end
 				
 			//Nor
-			4'h14:
+			4'he:
 				begin
 					EXE_Result <= ~(Op1 | Op2);
 					EXE_Zero <= 0;
@@ -141,7 +148,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt, clk);
 				end
 				
 			//Passing rt for Jr
-			4'h15:
+			4'hf:
 				begin
 					EXE_Result <= Op2;
 					EXE_Zero <= 0;

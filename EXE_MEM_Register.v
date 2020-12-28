@@ -1,18 +1,19 @@
 module EXE_MEM_Register (EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_DstReg, EXE_MEM_Rd, EXE_MEM_Zero, EXE_MEM_Rt, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual,
 								 EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, EXE_BranchAddress, EXE_Result, EXE_DstReg, ID_EXE_Rd, ID_EXE_Rt,
-								 EXE_Zero, BranchEqualIn, BranchnotEqualIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, clk);
+								 EXE_Zero, BranchEqualIn, BranchnotEqualIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn);
 
 // input
 	input [31:0] EXE_BranchAddress, EXE_Result, ID_EXE_Rt;
 	input [4:0] EXE_DstReg, ID_EXE_Rd;
-	input EXE_Zero, BranchEqualIn, BranchnotEqualIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, clk;
+	input EXE_Zero, BranchEqualIn, BranchnotEqualIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn;
+//	clk;
 	
 // output
 	output reg [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt;
 	output reg [4:0] EXE_MEM_DstReg, EXE_MEM_Rd;
 	output reg EXE_MEM_Zero, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite;
 	
-	always @(posedge clk)
+	always @(*)
 		begin
 			EXE_MEM_Result = EXE_Result;
 			EXE_MEM_BranchAddress = EXE_BranchAddress;

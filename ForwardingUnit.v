@@ -16,20 +16,21 @@ module ForwardingUnit (forwardOp1, forwardOp2, ID_EXE_Rs, ID_EXE_Rt, EXE_MEM_Rd,
 	always @(posedge clk) begin
 		
 //checking for ALU-ALU forwarding conditions
-		if(EXE_MEM_RegWrite && (EXE_MEM_Rd != 0) &&(EXE_MEM_Rd == ID_EXE_Rs)) begin
-			forwardOp1 <= 10; forward1 <= 1; end
+		if(EXE_MEM_RegWrite && (EXE_MEM_Rd != 4'b0) &&(EXE_MEM_Rd == ID_EXE_Rs)) begin
+			forwardOp1 <= 2'b10;
+			forward1 <= 1; end
 			
-		if(EXE_MEM_RegWrite && (EXE_MEM_Rd != 0) &&(EXE_MEM_Rd == ID_EXE_Rt)) begin
-			forwardOp2 <= 10; forward2 <= 1; end
+		if(EXE_MEM_RegWrite && (EXE_MEM_Rd != 4'b0) &&(EXE_MEM_Rd == ID_EXE_Rt)) begin
+			forwardOp2 <= 2'b10; forward2 <= 1; end
 
 //checking for MEM-ALU forwarding conditions
-		if(MEM_WB_RegWrite && (MEM_WB_Rd != 0) &&
-		~(EXE_MEM_RegWrite && (EXE_MEM_Rd != 0) &&(EXE_MEM_Rd == ID_EXE_Rs))&& MEM_WB_Rd == ID_EXE_Rs) begin
-			forwardOp1 <= 01; forward1 <= 1; end
+		if(MEM_WB_RegWrite && (MEM_WB_Rd != 4'b0) &&
+		~(EXE_MEM_RegWrite && (EXE_MEM_Rd != 4'b0) &&(EXE_MEM_Rd == ID_EXE_Rs))&& MEM_WB_Rd == ID_EXE_Rs) begin
+			forwardOp1 <= 2'b01; forward1 <= 1; end
 			
-		if(MEM_WB_RegWrite && (MEM_WB_Rd != 0) &&
-		~(EXE_MEM_RegWrite && (EXE_MEM_Rd != 0) &&(EXE_MEM_Rd == ID_EXE_Rt)) && MEM_WB_Rd == ID_EXE_Rt) begin
-			forwardOp1 <= 01; forward2 <= 1; end
+		if(MEM_WB_RegWrite && (MEM_WB_Rd != 4'b0) &&
+		~(EXE_MEM_RegWrite && (EXE_MEM_Rd != 4'b0) &&(EXE_MEM_Rd == ID_EXE_Rt)) && MEM_WB_Rd == ID_EXE_Rt) begin
+			forwardOp1 <= 2'b01; forward2 <= 1; end
 			
 		if(forward1 == 0) forwardOp1 <= 00;
 		if(forward2 == 0) forwardOp2 <= 00;

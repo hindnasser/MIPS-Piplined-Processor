@@ -1,4 +1,4 @@
-module PCMux (PCSrc, PC_value, Mem_BranchAddress, PC_Src, clk);
+module PC_MUX (PCSrc, PC_value, Mem_BranchAddress, PC_Src, clk);
 
 // input 
 	input [31:0] PC_value, Mem_BranchAddress;
@@ -12,7 +12,7 @@ module PCMux (PCSrc, PC_value, Mem_BranchAddress, PC_Src, clk);
 			if(PC_Src == 1) 
 				PCSrc = Mem_BranchAddress;
 			if(PC_Src == 0)
-				PCSrc = PC_value;;
+				PCSrc = PC_value;
 		end
 		
 endmodule

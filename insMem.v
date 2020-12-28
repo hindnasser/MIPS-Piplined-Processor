@@ -1,4 +1,4 @@
-module instructionMemory(instruction, PC);
+ module instructionMemory(instruction, PC);
 
 	integer j;
 	input [31:0]PC;
@@ -6,6 +6,8 @@ module instructionMemory(instruction, PC);
 	reg [7:0] mem [16383:0];
 	wire [31:0]instruction;
 	initial begin
+			// SOME softwares would have a 5000 limit on for loop.
+			// You can break this into multiple loops or initialize several locations in parallel
 			for (j = 0; j<4999; j = j + 1)
 				begin
 					mem[j] <= 8'b0;
@@ -83,7 +85,7 @@ module instructionMemory(instruction, PC);
 			//addi $s2,$0,10
 			//addi $s3,$0,3
 			//addi $s4,$0,2			
-			//add  $s5,$s1,$s2
+			//add  $s5,$s1,$s2 
 			//sub  $s6,$s1,$s3
 			mem[200] <= 'h24;
 			mem[201] <= 'h13;
@@ -97,7 +99,7 @@ module instructionMemory(instruction, PC);
 			
 			mem[208] <= 'h24;
 			mem[209] <= 'h15;
-			mem[200] <= 'h00;
+			mem[210] <= 'h00;
 			mem[211] <= 'h03;
 			
 			mem[212] <= 'h24;

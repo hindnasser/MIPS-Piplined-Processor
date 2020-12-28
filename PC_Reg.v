@@ -1,11 +1,14 @@
-module PC_Reg (PCOut, PCIn);
+module PC_Reg (PC, PCSrc);
 
 // input
-	input [31:0] PCIn;
+	input [31:0] PCSrc;
+	
 	
 // output
-	output [31:0] PCOut;
+	output reg [31:0] PC;
 	
-	assign PCOut = PCIn;
+	always @(*)
+
+		PC = PCSrc;
 	
 endmodule
