@@ -1,7 +1,7 @@
 module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, IF_ID_Func, IF_ID_Immediate,
-							 IF_ID_Address, IF_ID_PCplus4Out, instructionIn, PCplus4, clk);
+							 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4, clk);
 //input
-	input [31:0] instructionIn, PCplus4;
+	input [31:0] instruction, PCplus4;
 	input clk;
 		
 //output
@@ -9,19 +9,19 @@ module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, I
 	output reg [5:0] IF_ID_Func, IF_ID_Opcode;
 	output reg [15:0] IF_ID_Immediate;
 	output reg [25:0] IF_ID_Address;
-	output reg [31:0] IF_ID_PCplus4Out;
+	output reg [31:0] IF_ID_PCplus4;
 	
 	always @(posedge clk) 
 		begin
-			IF_ID_Rs <= instructionIn[25:21];
-			IF_ID_Rt <= instructionIn [20:16];
-			IF_ID_Rd <= instructionIn [15:11];
-			IF_ID_Shamt <= instructionIn [10:6];
-			IF_ID_Func <= instructionIn [5:0];
-			IF_ID_Opcode <= instructionIn [31:26];
-			IF_ID_Immediate <= instructionIn [15:0];
-			IF_ID_Address <= instructionIn [25:0];
-			IF_ID_PCplus4Out <= PCplus4;
+			IF_ID_Rs <= instruction[25:21];
+			IF_ID_Rt <= instruction [20:16];
+			IF_ID_Rd <= instruction [15:11];
+			IF_ID_Shamt <= instruction [10:6];
+			IF_ID_Func <= instruction [5:0];
+			IF_ID_Opcode <= instruction [31:26];
+			IF_ID_Immediate <= instruction [15:0];
+			IF_ID_Address <= instruction [25:0];
+			IF_ID_PCplus4 <= PCplus4;
 		end
 	
 endmodule

@@ -12,6 +12,7 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 	
 	initial
 		begin
+		
 			for(i=0;i<32;i=i+1) 
 				begin
 					registers_i[i]=i;
@@ -19,66 +20,29 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 		end
 		
 //writing data to the register
-		always @(posedge clk)
-			begin
-				if(RegWrite && WB_DstReg!=0)
-					begin
-						registers_i[WB_DstReg] <= WB_Data;
-					end
-			end
+//	wire [4:0] wbreg;
+//	
+//	assign wbreg = WB_DstReg;
+	always @(*)
+		begin
+		
+			if(RegWrite && WB_DstReg!=0)
+				begin
+					
+					registers_i[WB_DstReg] <= WB_Data;
+				end
+		end
 						
 //reading the data
+//	wire [4:0] Rs, Rt;
+//	assign Rs = IF_ID_Rs;
+//	assign Rt = IF_ID_Rt;
+		
 	always @(negedge clk)
-		begin
-			ReadData1 <= registers_i[IF_ID_Rs];
-			ReadData2 <= registers_i[IF_ID_Rt];
+			begin
+			
+			 ReadData1 = registers_i[IF_ID_Rs];
+			 ReadData2 = registers_i[IF_ID_Rt];
 		end
+			
 endmodule
-////////////////////////////////////////////////////
-////module clock(clk);
-////	output clk;
-////	reg clk;
-////	initial begin
-////		clk <= 0;
-////	end
-////	always
-////		begin
-////		#50 
-////		clk <= ~clk;	
-////	end
-////endmodule
-//////////////////////////////////////////////////////
-////module test;
-////wire [31:0] r1, r2;
-////reg [31:0] wd;
-////reg [4:0] rr1, rr2, w;
-////wire clk;
-////reg rw;
-////
-////clock c1(clk);
-////registerFile rf(r1,r2,clk,rr1,rr2,w,wd,rw);
-////
-////initial
-////begin
-////rr1 = 2 ; rr2 = 3 ; w=0 ; wd = 0; rw =0;
-////#50 $display("R1= %b ",r1," R2 = %b",r2);
-////
-////rr1 = 2 ; rr2 = 3 ; w=4 ; wd = 16; rw =1;
-////#75 $display("R1= %b ",r1," R2 = %b",r2);
-////
-////rr1 = 4 ; rr2 = 4 ; w= 0; wd = 16; rw =1;
-////#75 $display("R1= %b ",r1," R2 = %b",r2);
-////
-////rr1 = 4 ; rr2 = 4 ; w= 0; wd = 16; rw =1;
-////#76 $display("R1= %b ",r1," R2 = %b",r2);
-////
-////rr1 = 0 ; rr2 = 4 ; w= 0; wd = 16; rw =1;
-////#100 $display("R1= %b ",r1," R2 = %b",r2);
-////
-////rr1 = 2 ; rr2 = 3 ; w=0 ; wd = 0; rw =0;
-////#150 $display("R1= %b ",r1," R2 = %b",r2);
-////
-////end
-////endmodule
-////
-////

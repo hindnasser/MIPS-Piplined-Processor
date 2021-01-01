@@ -6,12 +6,14 @@ module Top (PC_value);
 // clock
 	wire clk;
 	clock c(clk);
+
 	
 // wires 
 
 	// IF Stage
-	wire [31:0] instruction, PCplus4, program_counter, Mem_BranchAddress, PCSrc;
-	wire PC_Src;
+	wire [31:0] instruction,PCplus4, Mem_BranchAddress, PCSrc;
+   wire PC_Src;
+	reg [31:0] program_counter; 
 	
 	//IF_ID_Register
 	wire [4:0] IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Shamt;
@@ -37,10 +39,11 @@ module Top (PC_value);
 	wire [31:0] ALUOut_EXEC, Op2Src, Op1, Op2, BranchAdd, EXE_BranchAddress;
 	wire EXE_Zero, Overflow;
 	wire [1:0] forwardOp1, forwardOp2;
-	wire [4:0] EXE_DstReg;
+	wire [4:0] EXE_DstReg, operation;
+	
 	
 	// EXE_MEM_Register
-	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt;
+	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt; 
 	wire EXE_MEM_Zero, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite; 
 	wire [4:0] EXE_MEM_DstReg, EXE_MEM_Rd;
 	
@@ -58,11 +61,23 @@ module Top (PC_value);
 	
 // IF Stage
 	
-	PC_MUX pcmux (PCSrc, PC_value, Mem_BranchAddress, 0);
-	PC_Reg pcreg (program_counter, PCSrc, clk);
-	PCAdder pcadd (PCplus4, program_counter);
+	initial 
+			begin
+			// constant initialization
+				program_counter <= 200;
+			end
+		
+	always @ (posedge clk)
+		begin
+			program_counter <= PCSrc;
+		end
+   
+	PC_MUX pcmux (PCSrc, PCplus4, Mem_BranchAddress, 0);
+	//PC_Reg pcreg (program_counter, PCSrc, clk);
+	PCAdder pcadd (PCplus4 , program_counter);
 	instructionMemory imem (instruction, program_counter);
-
+	
+	
 // IF_ID_Register
 	IF_ID_Register ifidr (IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, IF_ID_Func, IF_ID_Immediate,
 								 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4, clk); 
@@ -72,7 +87,7 @@ module Top (PC_value);
 	SignExtension se (SignedImmediate, IF_ID_Immediate);
 	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
 	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
-	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, RegWrite);//here
+	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, MEM_WB_RegWrite);//here
 	// floating register file
 	// Rs_MUX
 	// Rs_MUX rsmux (ID_Rs, ReadData1, FPReadData1, floatop, clk);
@@ -94,7 +109,8 @@ module Top (PC_value);
 	DstReg_MUX dstregmux (EXE_DstReg, ID_EXE_RtReg, ID_EXE_Rd, ID_EXE_RegDst);
 
 	AddressAdder addadd (EXE_BranchAddress, ID_EXE_PCplus4, BranchAdd);
-	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, 4'h4, ID_EXE_Shamt);//here
+	ALUcontrol aluc (operation, ID_EXE_ALUop, ID_EXE_Func);
+	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, operation, ID_EXE_Shamt);//here
 	// change nmber to operation after adding the alu control
 	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_RsReg, ID_EXE_RtReg, EXE_MEM_Rd, EXE_MEM_RegWrite, MEM_WB_Rd, MEM_WB_RegWrite);
 	// alu controlUnitd
@@ -116,37 +132,75 @@ module Top (PC_value);
 						           EXE_MEM_Rd, EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, clk);
    	
 // WB Stage
-	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, EXE_MEM_MemtoReg);
+	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_MemtoReg);
 	
 endmodule
 
-module tst_2; 
-	reg [31:0] PC_VALUE_;		  
+//module tst_2; 
+//	reg [31:0] PC_VALUE_;		  
+//	reg [31:0] cycle;
+//	Top top(PC_VALUE_);
+//	initial begin
+//		PC_VALUE_ <= 200;	  
+//		cycle <= 1;
+//	end				   
+//	always @(posedge top.clk) begin	
+//
+//	if (cycle == 12)
+//	begin
+//		$display("cycle: %d" , cycle);
+//		$display("PC: %d", top.program_counter);	
+//		$display ("IN, %h", top.instruction );
+//		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
+//		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 5");
+//		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
+//		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
+//		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
+//		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 15");
+//		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is -2  *** Check reporesentation");	
+//		$display("$s6: %d" , top.MEM_WB_ALUData, " Teck reporesentation");
+//		$display("$s6: %d" , top.Op1, " Teck reporesentation");
+//		$display("$s6: %d" , top.Op2, " Teck reporesentation");
+//		$display("$s6: %d" , top.ID_EXE_ALUSrc, " Teck reporesentation");
+//		$display("$s6: %d" , top.ReadData1, " Teck reporesentation");
+//		$display("$s6: %d" , top.ReadData2, " Teck reporesentation");
+//		
+//		
+//		end
+//			cycle = cycle + 1;
+//		
+//		
+//	end
+//endmodule
+module tst_1; 
+	reg [31:0]PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 200;	  
+		PC_VALUE_ <= 100;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
-
-	if (cycle == 12)
+	
+	if (cycle == 14)
 	begin
 		$display("cycle: %d" , cycle);
-		$display("PC: %d", top.program_counter);	
-		$display ("IN, %h", top.instruction );
+		$display("PC: %d",top.program_counter);				   
 		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 5");
-		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
-		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
-		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
-		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 15");
-		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is -2  *** Check reporesentation");		
-		
+		$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
+		$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
+		$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
+		$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
+		$display("$t4: %d" , top.regFile.registers_i[12], " The correct value is 20");
+		$display("$t5: %d" , top.regFile.registers_i[13], " The correct value is 24");
+		$display("$t6: %d" , top.regFile.registers_i[14], " The correct value is 28");
+		$display("$t7: %d" , top.regFile.registers_i[15], " The correct value is 32");
+				
 		
 		end
-			cycle = cycle + 1;
 		
+		
+	cycle = cycle + 1;
 		
 	end
 endmodule
