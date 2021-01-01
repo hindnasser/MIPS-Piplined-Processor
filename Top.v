@@ -136,71 +136,33 @@ module Top (PC_value);
 	
 endmodule
 
-//module tst_2; 
-//	reg [31:0] PC_VALUE_;		  
-//	reg [31:0] cycle;
-//	Top top(PC_VALUE_);
-//	initial begin
-//		PC_VALUE_ <= 200;	  
-//		cycle <= 1;
-//	end				   
-//	always @(posedge top.clk) begin	
-//
-//	if (cycle == 12)
-//	begin
-//		$display("cycle: %d" , cycle);
-//		$display("PC: %d", top.program_counter);	
-//		$display ("IN, %h", top.instruction );
-//		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-//		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 5");
-//		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
-//		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
-//		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
-//		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 15");
-//		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is -2  *** Check reporesentation");	
-//		$display("$s6: %d" , top.MEM_WB_ALUData, " Teck reporesentation");
-//		$display("$s6: %d" , top.Op1, " Teck reporesentation");
-//		$display("$s6: %d" , top.Op2, " Teck reporesentation");
-//		$display("$s6: %d" , top.ID_EXE_ALUSrc, " Teck reporesentation");
-//		$display("$s6: %d" , top.ReadData1, " Teck reporesentation");
-//		$display("$s6: %d" , top.ReadData2, " Teck reporesentation");
-//		
-//		
-//		end
-//			cycle = cycle + 1;
-//		
-//		
-//	end
-//endmodule
-module tst_1; 
-	reg [31:0]PC_VALUE_;		  
+module tst_2; 
+	reg [31:0] PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 100;	  
+		PC_VALUE_ <= 200;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
-	
-	if (cycle == 14)
+
+	if (cycle == 12)
 	begin
 		$display("cycle: %d" , cycle);
-		$display("PC: %d",top.program_counter);				   
+		$display("PC: %d", top.program_counter);	
+		$display ("IN, %h", top.instruction );
 		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
-		$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
-		$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
-		$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
-		$display("$t4: %d" , top.regFile.registers_i[12], " The correct value is 20");
-		$display("$t5: %d" , top.regFile.registers_i[13], " The correct value is 24");
-		$display("$t6: %d" , top.regFile.registers_i[14], " The correct value is 28");
-		$display("$t7: %d" , top.regFile.registers_i[15], " The correct value is 32");
-				
+		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 5");
+		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
+		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
+		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
+		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 15");
+		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is -2  *** Check reporesentation");	
+		
 		
 		end
+			cycle = cycle + 1;
 		
-		
-	cycle = cycle + 1;
 		
 	end
 endmodule
