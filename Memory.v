@@ -34,7 +34,7 @@ module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MemRead, MemWrite, cl
 	assign address = EXE_MEM_Result [9:0];
 	
 // Write to the memory
-	always @ (posedge clk) begin
+	always @ (*) begin
 		if(MemWrite == 1)
 			begin
 				mem[address+3] <= EXE_MEM_Rt[7:0];
