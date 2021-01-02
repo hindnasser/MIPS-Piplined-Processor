@@ -24,6 +24,10 @@ module ALUcontrol (operation, opcode, funct);
 							operation <=4'h4;
 						6'h24:
 							operation <=4'h7;
+						6'h25:
+							operation <=4'h3;
+						6'h14:
+							operation <= 4'h5;
 							endcase
 		
 		end

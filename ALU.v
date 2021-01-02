@@ -15,14 +15,6 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 	always @ (*) begin
 		case (operation)
 
-//			// unsigned addition 
-//			4'h0:
-//				begin
-//					EXE_Result <= Op1 + Op2;
-//					EXE_Zero <= 0;
-//					Overflow <= 0;
-//				end
-
 			// no Operation 
 			default:
 				begin
@@ -30,13 +22,6 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 						EXE_Zero <= 0;
 						Overflow <= 0;
 					end
-					
-//			4'h0:
-//					begin
-//						EXE_Result <= 0;
-//						EXE_Zero <= 0;
-//						Overflow <= 0;
-//					end
 				
 			//shift lift 16 for Op2
 			4'hb:
@@ -134,20 +119,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 					EXE_Result[0] <= Op1[0] && Op2[0];
 					EXE_Zero <= 0;
 					Overflow <= 0;
-				end
-				
-//			//Unsigned Subtract
-//			4'h6:
-//				begin
-//					EXE_Result <= Op2 - Op1;
-//					//to detect the EXE_Zero value
-//					if(EXE_Result == 32'h0)
-//						EXE_Zero <= 1;
-//						
-//					else EXE_Zero <= 0;
-//					Overflow <= 0;
-//				end
-				
+				end				
 				
 			//Signed Subtract
 			4'h7:
@@ -158,13 +130,16 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 					if(Op2[31] != Op1[31] && EXE_Result[31]== Op1[31])
 						Overflow <= 1;
 						
-					else Overflow <= 0;
+					else 
+						Overflow <= 0;
 					
 					//to detect the EXE_Zero bit
 					if(EXE_Result == 32'h0 && Overflow == 0)
 						EXE_Zero <= 1;
 						
-					else EXE_Zero <= 0;
+					else 
+						EXE_Zero <= 0;
+					
 				end
 				
 			//Shift lift 
