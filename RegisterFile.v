@@ -12,7 +12,6 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 	
 	initial
 		begin
-		
 			for(i=0;i<32;i=i+1) 
 				begin
 					registers_i[i]=i;
@@ -20,29 +19,19 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 		end
 		
 //writing data to the register
-//	wire [4:0] wbreg;
-//	
-//	assign wbreg = WB_DstReg;
 	always @(*)
 		begin
-		
 			if(RegWrite && WB_DstReg!=0)
 				begin
-					
 					registers_i[WB_DstReg] <= WB_Data;
 				end
 		end
 						
 //reading the data
-//	wire [4:0] Rs, Rt;
-//	assign Rs = IF_ID_Rs;
-//	assign Rt = IF_ID_Rt;
-		
 	always @(negedge clk)
-			begin
-			
-			 ReadData1 = registers_i[IF_ID_Rs];
-			 ReadData2 = registers_i[IF_ID_Rt];
+		begin
+			ReadData1 = registers_i[IF_ID_Rs];
+			ReadData2 = registers_i[IF_ID_Rt];
 		end
 			
 endmodule

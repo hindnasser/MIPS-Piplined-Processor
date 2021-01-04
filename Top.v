@@ -24,7 +24,7 @@ module Top (PC_value);
 	
 	// ID Stage
 	wire [31:0] SignedImmediate, UnsignedImmediate, ReadData1, ReadData2, ExtendedImm;					
-	wire RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned;
+	wire RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, Stall, PC_Write, IF_ID_Write;
 	wire [3:0] ALUop;
 	
 	// ID_EXE_Register
@@ -72,7 +72,8 @@ module Top (PC_value);
 			program_counter <= PCSrc;
 		end
    
-	PC_MUX pcmux (PCSrc, PCplus4, Mem_BranchAddress, 0);
+	
+	PC_MUX pcmux (PCSrc, PCplus4, Mem_BranchAddress, 0); // change constant
 	//PC_Reg pcreg (program_counter, PCSrc, clk);
 	PCAdder pcadd (PCplus4 , program_counter);
 	instructionMemory imem (instruction, program_counter);
@@ -88,11 +89,9 @@ module Top (PC_value);
 	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
 	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
 	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, MEM_WB_RegWrite);//here
+	//HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg);
 	// floating register file
-	// Rs_MUX
-	// Rs_MUX rsmux (ID_Rs, ReadData1, FPReadData1, floatop, clk);
-	// Rt_MUx
-	// Rt_MUX rtmux (ID_Rt, ReadData2, FPReadData2, floatop, clk);
+	
 	
 // ID_EXE_Register
 	ID_EXE_Register idexer (ID_EXE_Func, ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RtReg, ID_EXE_RsReg, ID_EXE_ExtendedImm, ID_EXE_Shamt, ID_EXE_RegDst,
@@ -158,5 +157,4 @@ begin
 		cycle = cycle + 1;
 	end
 endmodule
-
 

@@ -6,6 +6,6 @@ module AddressOr (PC_Src, BranchEqualResult, BranchnotEqualResult);
 // output
 	output PC_Src;
 	
-	assign PC_Src = BranchEqualResult | BranchnotEqualResult;
+	assign PC_Src = BranchEqualResult || BranchnotEqualResult;
 	
 endmodule
