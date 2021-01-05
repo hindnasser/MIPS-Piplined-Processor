@@ -64,12 +64,13 @@ module Top (PC_value);
 	initial 
 		begin
 			// constant initialization
-			program_counter <= 500;
+			program_counter <= 116;
 		end
 		
 	always @ (posedge clk)
 		begin
-			program_counter <= PCSrc;
+			if(PC_Write == 1)
+				program_counter <= PCSrc;
 		end
    
 	
@@ -81,15 +82,15 @@ module Top (PC_value);
 	
 // IF_ID_Register
 	IF_ID_Register ifidr (IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, IF_ID_Func, IF_ID_Immediate,
-								 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4, clk); 
+								 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4, clk, IF_ID_Write); 
 	
 // ID Stage
-	ControlUnit cu (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, IF_ID_Opcode);
+	ControlUnit cu (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, IF_ID_Opcode, Stall);
 	SignExtension se (SignedImmediate, IF_ID_Immediate);
 	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
 	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
 	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, MEM_WB_RegWrite);//here
-	//HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg);
+	HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg);
 	// floating register file
 	
 	
@@ -111,7 +112,6 @@ module Top (PC_value);
 	ALUcontrol aluc (operation, ID_EXE_ALUop, ID_EXE_Func);
 	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, operation, ID_EXE_Shamt);
 	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_RsReg, ID_EXE_RtReg, EXE_MEM_DstReg, EXE_MEM_RegWrite, MEM_WB_DstReg, MEM_WB_RegWrite);
-	// alu controlUnitd
 	
   
 // EXE_MEM_Register
@@ -134,27 +134,37 @@ module Top (PC_value);
 	
 endmodule
 
-module tst_5; 
+module tst_1; 
 	reg [31:0]PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 500;	  
+		PC_VALUE_ <= 100;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
-if (cycle== 16)	
-begin
+	
+	if (cycle == 10 )
+	begin
 		$display("cycle: %d" , cycle);
 		$display("PC: %d",top.program_counter);				   
 		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 30");
-		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 20");		
-		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 6");		
-
-		
+		//$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
+		//$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
+		//$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
+		//$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
+		$display("$t4: %d" , top.regFile.registers_i[12], " The correct value is 20");
+		$display("$t5: %d" , top.regFile.registers_i[13], " The correct value is 24");
+		$display("$t6: %d" , top.regFile.registers_i[14], " The correct value is 28");
+		$display("$t7: %d" , top.regFile.registers_i[15], " The correct value is 32");
+		$display("$t7: %d" , top.regFile.registers_i[18], " The correct value is 32");
+				
+	
 		end
-		cycle = cycle + 1;
+		
+		
+	cycle = cycle + 1;
+		
 	end
 endmodule
 
