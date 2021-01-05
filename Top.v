@@ -60,22 +60,25 @@ module Top (PC_value);
 	wire [31:0] WB_Data;
 	
 // IF Stage
+
+	reg start;
+	initial
+		start <= 1;
 	
-	initial 
-		begin
-			// constant initialization
-			program_counter <= 116;
-		end
-		
 	always @ (posedge clk)
 		begin
-			if(PC_Write == 1)
+			if(start)
+				begin
+					program_counter <= PC_value;
+					start <= 0;
+				end
+				
+			else if(PC_Write == 1 && !start)
 				program_counter <= PCSrc;
 		end
    
 	
-	PC_MUX pcmux (PCSrc, PCplus4, Mem_BranchAddress, 0); // change constant
-	//PC_Reg pcreg (program_counter, PCSrc, clk);
+	PC_MUX pcmux (PCSrc, PCplus4, Mem_BranchAddress, PC_Src); 
 	PCAdder pcadd (PCplus4 , program_counter);
 	instructionMemory imem (instruction, program_counter);
 	
@@ -134,32 +137,66 @@ module Top (PC_value);
 	
 endmodule
 
-module tst_1; 
+//module tst_1; 
+//	reg [31:0]PC_VALUE_;		  
+//	reg [31:0] cycle;
+//	Top top(PC_VALUE_);
+//	initial begin
+//		PC_VALUE_ <= 116;	  
+//		cycle <= 1;
+//	end				   
+//	always @(posedge top.clk) begin	
+//	
+//	if (cycle == 10 )
+//	begin
+//	#10
+//		$display("cycle: %d" , cycle);
+//		$display("%b ", top.PC_value);
+//		$display("%b ", PC_VALUE_);
+//		$display("PC: %b",top.program_counter);				   
+//		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
+//		//$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
+//		//$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
+//		//$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
+//		//$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
+//		$display("$t4: %d" , top.regFile.registers_i[12], " The correct value is 20");
+//		$display("$t5: %d" , top.regFile.registers_i[13], " The correct value is 24");
+//		$display("$t6: %d" , top.regFile.registers_i[14], " The correct value is 28");
+//		$display("$t7: %d" , top.regFile.registers_i[15], " The correct value is 32");
+//		$display("$t7: %d" , top.regFile.registers_i[18], " The correct value is 32");
+//				
+//	
+//		end
+//		
+//		
+//	cycle = cycle + 1;
+//		
+//	end
+//endmodule
+
+module arethmatic1; 
 	reg [31:0]PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 100;	  
+		PC_VALUE_ <= 300;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
 	
-	if (cycle == 10 )
+	if (cycle == 12)
 	begin
 		$display("cycle: %d" , cycle);
 		$display("PC: %d",top.program_counter);				   
 		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		//$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
-		//$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
-		//$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
-		//$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
-		$display("$t4: %d" , top.regFile.registers_i[12], " The correct value is 20");
-		$display("$t5: %d" , top.regFile.registers_i[13], " The correct value is 24");
-		$display("$t6: %d" , top.regFile.registers_i[14], " The correct value is 28");
-		$display("$t7: %d" , top.regFile.registers_i[15], " The correct value is 32");
-		$display("$t7: %d" , top.regFile.registers_i[18], " The correct value is 32");
-				
-	
+		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 15");
+		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
+		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
+		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
+		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 10");
+		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is 11");
+		
+		
 		end
 		
 		
@@ -167,4 +204,3 @@ module tst_1;
 		
 	end
 endmodule
-
