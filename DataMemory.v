@@ -1,14 +1,12 @@
-module DataMemory (Mem_Result, EXE_MEM_Address, EXE_MEM_Rt, MemRead, MemWrite, clk);
+module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MemRead, MemWrite, clk);
 
 //input
-	input [31:0] EXE_MEM_Address, EXE_MEM_Rt;
+	input [31:0] EXE_MEM_Result, EXE_MEM_Rt;
 	input MemRead, MemWrite, clk;
 	
 //output
-	output reg [31:0] Mem_Result;
+	output reg [31:0] MEM_Result;
 	
-//actual address
-	wire [9:0] address;
 	
 //Intitialization for the memory 
 	reg [7:0] mem [1023:0]; // building a 1k memory //
@@ -32,25 +30,29 @@ module DataMemory (Mem_Result, EXE_MEM_Address, EXE_MEM_Rt, MemRead, MemWrite, c
 		end
 	
 // assigning a value to actual address
-	assign address = EXE_MEM_Address [9:0];
+	wire [9:0] address;
+	assign address = EXE_MEM_Result [9:0];
 	
 // Write to the memory
-	always @ (posedge clk && MemWrite) begin
-//		if(MemWrite == 1)
-//			begin
-				mem[address] <= EXE_MEM_Rt[7:0];
-				mem[address-1] <= EXE_MEM_Rt[15:8];
-				mem[address-2] <= EXE_MEM_Rt [23:16];
-				mem[address-3] <= EXE_MEM_Rt [31:17];
-//			end 
+	always @ (*) begin
+		if(MemWrite == 1)
+			begin
+				mem[address+3] <= EXE_MEM_Rt[7:0];
+				mem[address+2] <= EXE_MEM_Rt[15:8];
+				mem[address+1] <= EXE_MEM_Rt [23:16];
+				mem[address] <= EXE_MEM_Rt [31:17];
+			end 
 end
 		
 // Read from the memory
-	always @(negedge clk && MemRead)begin
-//		if(MemRead == 1) 
-//			begin
-				Mem_Result = { mem[address-3], mem[address-2], mem[address-1], mem[address]};
-//			end 
+	always @(negedge clk)begin
+		if(MemRead == 1) 
+			begin
+				MEM_Result <= { mem[address], mem[address+1], mem[address+2], mem[address+3]};
+			end 
 end
 	
 endmodule
+
+
+
