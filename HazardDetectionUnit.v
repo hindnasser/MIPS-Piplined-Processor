@@ -1,11 +1,10 @@
 module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg);
 
 // input
-	input [4:0] IF_ID_Rs, IF_ID_Rt;
+	input [4:0] IF_ID_Rs, IF_ID_Rt, ID_EXE_RtReg;
 	input ID_EXE_MemRead;
 	
 // output
-	output reg [4:0] ID_EXE_RtReg;
 	output reg Stall, PC_Write, IF_ID_Write;
 	
 	initial 
@@ -22,6 +21,13 @@ module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID
 					Stall <= 1;
 					PC_Write <= 0;
 					IF_ID_Write <= 0;
+				end
+				
+			else 
+				begin
+					Stall <= 0;
+					PC_Write <= 1;
+					IF_ID_Write <= 1;
 				end
 		end	
 
