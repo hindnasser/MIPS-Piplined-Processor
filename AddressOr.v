@@ -4,8 +4,16 @@ module AddressOr (PC_Src, BranchEqualResult, BranchnotEqualResult);
 	input BranchEqualResult, BranchnotEqualResult;
 	
 // output
-	output PC_Src;
+	output reg PC_Src;
 	
-	assign PC_Src = BranchEqualResult || BranchnotEqualResult;
+	initial 
+		begin
+			PC_Src <= 0;
+		end
 	
+	always @(*)
+		begin
+			PC_Src <= BranchEqualResult || BranchnotEqualResult;
+		end
+		
 endmodule
