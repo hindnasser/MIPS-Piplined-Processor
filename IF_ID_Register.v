@@ -11,6 +11,8 @@ module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, I
 	output reg [25:0] IF_ID_Address;
 	output reg [31:0] IF_ID_PCplus4;
 	
+	
+	
 	always @(posedge clk)
 		begin
 			if(IF_ID_Write == 1)
