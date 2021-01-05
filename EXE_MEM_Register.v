@@ -6,7 +6,6 @@ module EXE_MEM_Register (EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_DstReg, 
 	input [31:0] EXE_BranchAddress, EXE_Result, ID_EXE_Rt;
 	input [4:0] EXE_DstReg;
 	input EXE_Zero, BranchEqualIn, BranchnotEqualIn, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, clk;
-//	clk;
 	
 // output
 	output reg [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt;
