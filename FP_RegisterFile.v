@@ -22,7 +22,7 @@ module FP_RegisterFile (FPReadData1, FPReadData2, clk, fmt, FPReadRegister1, FPR
 		end
 
 //writing data to the register
-	always @(posedge clk)
+	always @(*)
 		begin
 			if(FPRegWrite && FPWriteRegister!=0)
 				begin
