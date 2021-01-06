@@ -11,7 +11,7 @@ module Top (PC_value);
 // wires 
 
 	// IF Stage
-	wire [31:0] instruction,PCplus4, Mem_BranchAddress, PCSrc;
+	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc;
    wire PC_Src;
 	reg [31:0] program_counter; 
 	
@@ -36,7 +36,7 @@ module Top (PC_value);
 	wire [4:0] ID_EXE_Shamt, ID_EXE_Rd, ID_EXE_RtReg, ID_EXE_RsReg; 
 	
 	// EXE Stage
-	wire [31:0] ALUOut_EXEC, Op2Src, Op1, Op2, BranchAdd, EXE_BranchAddress;
+	wire [31:0] ALUOut_EXEC, Op2Src, Op1, Op2, BranchAdd;
 	wire EXE_Zero, Overflow;
 	wire [1:0] forwardOp1, forwardOp2;
 	wire [4:0] EXE_DstReg, operation;
@@ -78,7 +78,7 @@ module Top (PC_value);
 		end
    
 	
-	PC_MUX pcmux (PCSrc, PCplus4, Mem_BranchAddress, PC_Src); 
+	PC_MUX pcmux (PCSrc, PCplus4, EXE_BranchAddress, PC_Src); 
 	PCAdder pcadd (PCplus4 , program_counter);
 	instructionMemory imem (instruction, program_counter);
 	
@@ -115,18 +115,17 @@ module Top (PC_value);
 	ALUcontrol aluc (operation, ID_EXE_ALUop, ID_EXE_Func);
 	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, operation, ID_EXE_Shamt);
 	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_RsReg, ID_EXE_RtReg, EXE_MEM_DstReg, EXE_MEM_RegWrite, MEM_WB_DstReg, MEM_WB_RegWrite);
+	BranchEqualAnd beand (BranchEqualResult, EXE_Zero, ID_EXE_BranchEqual);
+	BranchnotEqualAnd bneand(BranchnotEqualResult, EXE_Zero, ID_EXE_BranchnotEqual);
+	AddressOr addor (PC_Src, BranchEqualResult, BranchnotEqualResult);
 	
   
 // EXE_MEM_Register
-	EXE_MEM_Register exememr(EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_DstReg, EXE_MEM_Zero, EXE_MEM_Rt, EXE_MEM_BranchEqual, EXE_MEM_BranchnotEqual,
-								    EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, EXE_BranchAddress, ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt,
-								    EXE_Zero, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, clk);
+	EXE_MEM_Register exememr(EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, 
+									 ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, clk);
 
 // MEM Stage
 	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, clk);
-	BranchEqualAnd beand (BranchEqualResult, EXE_MEM_Zero, EXE_MEM_BranchEqual);
-	BranchnotEqualAnd bneand(BranchnotEqualResult, EXE_MEM_Zero, EXE_MEM_BranchnotEqual);
-	AddressOr addor (PC_Src, BranchEqualResult, BranchnotEqualResult);
 	
 // MEM_WB_Register
 	MEM_WB_Register memwbreg (MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
@@ -142,30 +141,26 @@ endmodule
 //	reg [31:0] cycle;
 //	Top top(PC_VALUE_);
 //	initial begin
-//		PC_VALUE_ <= 116;	  
+//		PC_VALUE_ <= 100;	  
 //		cycle <= 1;
 //	end				   
 //	always @(posedge top.clk) begin	
 //	
-//	if (cycle == 10 )
+//	if (cycle == 14)
 //	begin
-//	#10
 //		$display("cycle: %d" , cycle);
-//		$display("%b ", top.PC_value);
-//		$display("%b ", PC_VALUE_);
-//		$display("PC: %b",top.program_counter);				   
+//		$display("PC: %d",top.program_counter);				   
 //		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-//		//$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
-//		//$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
-//		//$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
-//		//$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
+//		$display("$t0: %d" , top.regFile.registers_i[8], " The correct value is 4");
+//		$display("$t1: %d" , top.regFile.registers_i[9], " The correct value is 8");		
+//		$display("$t2: %d" , top.regFile.registers_i[10], " The correct value is 12");		
+//		$display("$t3: %d" , top.regFile.registers_i[11], " The correct value is 16");
 //		$display("$t4: %d" , top.regFile.registers_i[12], " The correct value is 20");
 //		$display("$t5: %d" , top.regFile.registers_i[13], " The correct value is 24");
 //		$display("$t6: %d" , top.regFile.registers_i[14], " The correct value is 28");
 //		$display("$t7: %d" , top.regFile.registers_i[15], " The correct value is 32");
-//		$display("$t7: %d" , top.regFile.registers_i[18], " The correct value is 32");
 //				
-//	
+//		$finish;
 //		end
 //		
 //		
@@ -173,34 +168,62 @@ endmodule
 //		
 //	end
 //endmodule
-
-module arethmatic1; 
+module tst_5; 
 	reg [31:0]PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 300;	  
+		PC_VALUE_ <= 500;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
-	
-	if (cycle == 12)
-	begin
+if (cycle== 14)	
+begin
 		$display("cycle: %d" , cycle);
 		$display("PC: %d",top.program_counter);				   
 		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 15");
-		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
-		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
-		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
-		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 10");
-		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is 11");
+		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 30");
+		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 20");		
+		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 6");	
+		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 30");
+		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 20");
+		$display("$s2: %d" , top.regFile.registers_i[21], " The correct value is 20");
 		
 		
+
+		$finish;
 		end
-		
-		
-	cycle = cycle + 1;
-		
+		cycle = cycle + 1;
 	end
 endmodule
+
+//module arethmatic1; 
+//	reg [31:0]PC_VALUE_;		  
+//	reg [31:0] cycle;
+//	Top top(PC_VALUE_);
+//	initial begin
+//		PC_VALUE_ <= 300;	  
+//		cycle <= 1;
+//	end				   
+//	always @(posedge top.clk) begin	
+//	
+//	if (cycle == 12)
+//	begin
+//		$display("cycle: %d" , cycle);
+//		$display("PC: %d",top.program_counter);				   
+//		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
+//		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 15");
+//		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
+//		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
+//		$display("$s4: %d" , top.regFile.registers_i[22], " The correct value is 2");
+//		$display("$s5: %d" , top.regFile.registers_i[23], " The correct value is 10");
+//		$display("$s6: %d" , top.regFile.registers_i[24], " The correct value is 11");
+//		
+//		
+//		end
+//		
+//		
+//	cycle = cycle + 1;
+//		
+//	end
+//endmodule
