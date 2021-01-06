@@ -3,7 +3,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 // input
 	input [63:0] Op1, Op2;
 	//note that Op1 takes : rs
-	//			Op2 takes : immediate , rt
+	//	    Op2 takes : immediate , rt
 	input [4:0] operation;
 	input [4:0] shamt;
 	//input clk;
