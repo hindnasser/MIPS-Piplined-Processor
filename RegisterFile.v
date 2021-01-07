@@ -30,8 +30,8 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 //reading the data
 	always @(negedge clk)
 		begin
-			ReadData1 = registers_i[IF_ID_Rs];
-			ReadData2 = registers_i[IF_ID_Rt];
+			ReadData1 <= registers_i[IF_ID_Rs];
+			ReadData2 <= registers_i[IF_ID_Rt];
 		end
 			
 endmodule

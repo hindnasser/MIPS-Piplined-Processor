@@ -4,10 +4,10 @@ module PCAdder (PCplus4, PC);
 	input [31:0] PC;
 	
 // output
-	output  [31:0] PCplus4;
+	output reg  [31:0] PCplus4;
 	
-	
-	assign PCplus4 = PC + 4;
+	always @(*)
+		PCplus4 <= PC + 4;
 		
 	
 endmodule

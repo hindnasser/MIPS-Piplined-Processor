@@ -2,11 +2,10 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 
 // input
 	input [63:0] Op1, Op2;
-	//note that Op1 takes : rs
-	//Op2 takes : immediate , rt
+	// note that Op1 takes : rs
+	// Op2 takes : immediate , rt
 	input [4:0] operation;
 	input [4:0] shamt;
-	//input clk;
 	
 // output
 	output reg [63:0] EXE_Result;
@@ -142,61 +141,60 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 					if(Op1[31]^Op2[31])//different signs
 					begin
 						if(Op1[30:23] > Op2[30:23])//Op1's exp is larger
-						begin
-							mantissa1 = {1'b1,Op1[22:0]};
-							mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
-							//above may need blocking possible errors may happen
-							mantissa1 = mantissa1 - mantissa2;
-							EXE_Result[31] = Op1[31];
-							EXE_Result[30:23] = Op1[30:23];
-							while(!mantissa1[23])
 							begin
-								mantissa1 = mantissa1<<1;
-								EXE_Result[30:23] = EXE_Result[30:23]-1;
+								mantissa1 = {1'b1,Op1[22:0]};
+								mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
+								mantissa1 = mantissa1 - mantissa2;
+								EXE_Result[31] = Op1[31];
+								EXE_Result[30:23] = Op1[30:23];
+								while(!mantissa1[23])
+									begin
+										mantissa1 = mantissa1<<1;
+										EXE_Result[30:23] = EXE_Result[30:23]-1;
+									end
+								EXE_Result[22:0] <= mantissa1;
 							end
-							EXE_Result[22:0] <= mantissa1;
-						end
 						else
-						begin
-							mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
-							mantissa2 = {1'b1,Op2[22:0]};
-							//above may need blocking possible errors may happen
-							mantissa1 = mantissa2 - mantissa1;
-							EXE_Result[31] = Op2[31];
-							EXE_Result[30:23] = Op2[30:23];
-							while(!mantissa1[23])
 							begin
-								mantissa1 = mantissa1<<1;
-								EXE_Result[30:23] = EXE_Result[30:23]-1;
+								mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
+								mantissa2 = {1'b1,Op2[22:0]};
+								//above may need blocking possible errors may happen
+								mantissa1 = mantissa2 - mantissa1;
+								EXE_Result[31] = Op2[31];
+								EXE_Result[30:23] = Op2[30:23];
+								while(!mantissa1[23])
+									begin
+										mantissa1 = mantissa1<<1;
+										EXE_Result[30:23] = EXE_Result[30:23]-1;
+									end
+								EXE_Result[22:0] <= mantissa1;
 							end
-							EXE_Result[22:0] <= mantissa1;
-						end
 					end
 					else//same sign
 					begin
 						if(Op1[30:23] > Op2[30:23])//Op1's exp is larger
-						begin 
-							mantissa1 = {1'b1,Op1[22:0]};
-							mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
-							//above may need blocking possible errors may happen
-							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[24] means overflow
-							EXE_Result[22:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[30:23] <= Op1[30:23]+mantissa1[24];
-							EXE_Result[31] <= Op1[31];
+							begin 
+								mantissa1 = {1'b1,Op1[22:0]};
+								mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
+								//above may need blocking possible errors may happen
+								mantissa1 = mantissa1 + mantissa2;
+								// mantissa1[24] means overflow
+								EXE_Result[22:0] <= mantissa1>>mantissa1[24];
+								EXE_Result[30:23] <= Op1[30:23]+mantissa1[24];
+								EXE_Result[31] <= Op1[31];
 
-						end
+							end
 						else
-						begin
-							mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
-							mantissa2 = {1'b1,Op2[22:0]};
-							//above may need blocking possible errors may happen
-							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[24] means overflow
-							EXE_Result[22:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[30:23] <= Op2[30:23]+mantissa1[24];
-							EXE_Result[31] <= Op1[31];
-						end
+							begin
+								mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
+								mantissa2 = {1'b1,Op2[22:0]};
+								//above may need blocking possible errors may happen
+								mantissa1 = mantissa1 + mantissa2;
+								// mantissa1[24] means overflow
+								EXE_Result[22:0] <= mantissa1>>mantissa1[24];
+								EXE_Result[30:23] <= Op2[30:23]+mantissa1[24];
+								EXE_Result[31] <= Op1[31];
+							end
 					end
 				end	
 			//FP Add double

@@ -80,7 +80,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchnotEqual <= 0;
 						ALUSrc <= 1; //extended
 						Issigned <= 0;
-						ALUop <= 4'b1011; //sll 16 for op2 
+						ALUop <= 4'hb; //sll 16 for op2 
 					end
 					
 				//Load Byte Unsigned
@@ -197,7 +197,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchEqual <= 1;
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
-						Issigned <= 0;
+						Issigned <= 1;
 						ALUop <= 4'h7; // signed sub
 					end
 					
@@ -214,7 +214,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchEqual <= 0;
 						BranchnotEqual <= 1;
 						ALUSrc <= 0;
-						Issigned <= 0;
+						Issigned <= 1;
 						ALUop <= 4'h7;
 					end
 					
@@ -249,7 +249,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
 						Issigned <= 0;
-						ALUop <= 4'h4;
+						ALUop <= 4'h0;
 					end
 						
 				//Or immediate

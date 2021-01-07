@@ -1,8 +1,8 @@
-module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg);
+module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump);
 
 // input
 	input [4:0] IF_ID_Rs, IF_ID_Rt, ID_EXE_RtReg;
-	input ID_EXE_MemRead;
+	input ID_EXE_MemRead, PC_Src, Jump;
 	
 // output
 	output reg Stall, PC_Write, IF_ID_Write;
@@ -16,7 +16,20 @@ module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID
 		
 	always @(*)
 		begin
-			if(ID_EXE_MemRead && ((ID_EXE_RtReg == IF_ID_Rs)|| (ID_EXE_RtReg == IF_ID_Rt)))
+			if(PC_Src)
+				begin
+					Stall <= 1;
+					PC_Write <= 1;
+					IF_ID_Write <= 0;
+				end
+			else if(Jump)
+				begin
+					Stall <= 0;
+					PC_Write <= 1;
+					IF_ID_Write <= 0;
+				end
+				
+			else if(ID_EXE_MemRead && ((ID_EXE_RtReg == IF_ID_Rs)|| (ID_EXE_RtReg == IF_ID_Rt))&& !PC_Src)
 				begin
 					Stall <= 1;
 					PC_Write <= 0;

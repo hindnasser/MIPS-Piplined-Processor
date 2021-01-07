@@ -1,11 +1,12 @@
-module BranchnotEqualAnd (BranchnotEqualResult, EXE_MEM_Zero, BranchnotEqual);
+module BranchnotEqualAnd (BranchnotEqualResult, EXE_Zero, BranchnotEqual);
 
 // input 
-	input EXE_MEM_Zero, BranchnotEqual;
+	input EXE_Zero, BranchnotEqual;
 	
 // output
-	output BranchnotEqualResult;
+	output reg BranchnotEqualResult;
 	
-	assign BranchnotEqualResult = ~(EXE_MEM_Zero) & BranchnotEqual;
+	always @(*)
+		BranchnotEqualResult <= (~(EXE_Zero)) && BranchnotEqual;
 	
 endmodule
