@@ -15,6 +15,8 @@ module ALUcontrol (operation, opcode, funct);
 			
 			4'h4:
 				operation <= 4'h4;
+			4'h7:
+				operation <= 4'h7;
 			
 			4'h2:
 				begin

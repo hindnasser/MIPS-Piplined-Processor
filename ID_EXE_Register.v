@@ -21,13 +21,10 @@ module ID_EXE_Register (ID_EXE_Func, ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EX
 	always @(posedge clk) 
 		begin
 			ID_EXE_RegDst <= RegDstIn;
-			ID_EXE_RegWrite <= RegWriteIn;
 			ID_EXE_MemtoReg <= MemtoRegIn;
 			ID_EXE_JmpandLink <= JmpandLinkIn;
-			ID_EXE_MemRead <= MemReadIn;
-			ID_EXE_MemWrite <= MemWriteIn;
 			ID_EXE_BranchEqual <= BranchEqualIn;
-			ID_EXE_BranchnotEqual <= BranchEqualIn;
+			ID_EXE_BranchnotEqual <= BranchnotEqualIn;
 			ID_EXE_ALUSrc <= ALUSrcIn;
 			ID_EXE_ALUop <= ALUopIn;
 			ID_EXE_PCplus4 <= IF_ID_PCplus4;
@@ -39,6 +36,12 @@ module ID_EXE_Register (ID_EXE_Func, ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EX
 			ID_EXE_Shamt <= IF_ID_Shamt;
 			ID_EXE_RtReg <= IF_ID_Rt;
 			ID_EXE_RsReg <= IF_ID_Rs;
+			ID_EXE_MemRead <= MemReadIn;
+			ID_EXE_MemWrite <= MemWriteIn;
+			ID_EXE_RegWrite <= RegWriteIn;
+			
+				
+
 		end
 		
 endmodule

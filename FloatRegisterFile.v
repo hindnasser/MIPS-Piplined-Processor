@@ -1,14 +1,13 @@
 module FP_RegisterFile (FPReadData1, FPReadData2, clk, fmt, FPReadRegister1, FPReadRegister2, FPWriteRegister, FPWriteData, FPRegWrite);
-// input
+//input
 	input [4:0] fmt;
 	input [4:0] FPReadRegister1, FPReadRegister2, FPWriteRegister;
 	input clk, FPRegWrite;
 	input [63:0] FPWriteData;
-
-// output	
+//output	
 	output reg [63:0] FPReadData1, FPReadData2;
 	
-// initializing registers
+//initializing registers
 	reg [31:0] registers_f[31:0];
 	integer i;
 	
@@ -22,8 +21,8 @@ module FP_RegisterFile (FPReadData1, FPReadData2, clk, fmt, FPReadRegister1, FPR
 				
 		end
 
-// writing data to the register
-	always @(*)
+//writing data to the register
+	always @(posedge clk)
 		begin
 			if(FPRegWrite && FPWriteRegister!=0)
 				begin
@@ -37,7 +36,7 @@ module FP_RegisterFile (FPReadData1, FPReadData2, clk, fmt, FPReadRegister1, FPR
 				end
 		end
 						
-// reading the data
+//reading the data
 	always @(negedge clk)
 		begin
 			if(fmt == 5'h10)

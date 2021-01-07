@@ -4,8 +4,9 @@ module BranchEqualAnd (BranchEqualResult, EXE_MEM_Zero, BranchEqual);
 	input EXE_MEM_Zero, BranchEqual;
 	
 // output
-	output BranchEqualResult;
+	output reg BranchEqualResult;
 	
-	assign BranchEqualResult = EXE_MEM_Zero & BranchEqual;
+	always @(*)
+		BranchEqualResult <= EXE_MEM_Zero && BranchEqual;
 	
 endmodule

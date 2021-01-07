@@ -197,7 +197,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchEqual <= 1;
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
-						Issigned <= 0;
+						Issigned <= 1;
 						ALUop <= 4'h7; // signed sub
 					end
 					
@@ -214,7 +214,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchEqual <= 0;
 						BranchnotEqual <= 1;
 						ALUSrc <= 0;
-						Issigned <= 0;
+						Issigned <= 1;
 						ALUop <= 4'h7;
 					end
 					

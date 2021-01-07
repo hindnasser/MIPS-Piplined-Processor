@@ -11,8 +11,6 @@ module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, I
 	output reg [25:0] IF_ID_Address;
 	output reg [31:0] IF_ID_PCplus4;
 	
-	
-	
 	always @(posedge clk)
 		begin
 			if(IF_ID_Write == 1)
@@ -26,6 +24,19 @@ module IF_ID_Register(IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Opcode, IF_ID_Shamt, I
 					IF_ID_Immediate <= instruction [15:0];
 					IF_ID_Address <= instruction [25:0];
 					IF_ID_PCplus4 <= PCplus4;
+				end
+			
+			else 
+				begin
+					IF_ID_Rs <= 0;
+					IF_ID_Rt <= 0;
+					IF_ID_Rd <= 0;
+					IF_ID_Shamt <= 0;
+					IF_ID_Func <= 0;
+					IF_ID_Opcode <= 0;
+					IF_ID_Immediate <= 0;
+					IF_ID_Address <= 0;
+					IF_ID_PCplus4 <= 0;
 				end
 		end
 endmodule
