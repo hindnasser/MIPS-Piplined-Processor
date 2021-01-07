@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-01-07T20:43:40.694Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" etag="4Ra9TfV0fqjOZ6u0ZD3Q" version="14.1.8" type="github">
+<mxfile host="app.diagrams.net" modified="2021-01-07T20:49:32.406Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" etag="M6hwKxuCPXcXB0mqbbuw" version="14.1.8" type="github">
   <diagram id="FUZhbVknojldcqYKG9fJ" name="Page-1">
-    <mxGraphModel dx="3374" dy="580" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="none" math="0" shadow="0">
+    <mxGraphModel dx="3201" dy="483" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="none" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1411,12 +1411,12 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-7" value="MemWrite" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FF9933;" vertex="1" connectable="0" parent="rZ_rh7BoH4JBTpEfDPfL-5">
+        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-7" value="MEM_memWrite" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FF9933;" vertex="1" connectable="0" parent="rZ_rh7BoH4JBTpEfDPfL-5">
           <mxGeometry x="0.1923" y="-2" relative="1" as="geometry">
-            <mxPoint x="2" y="-10" as="offset" />
+            <mxPoint x="2" y="-7" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-1" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Address&lt;br style=&quot;font-size: 8px;&quot;&gt;Or&lt;/font&gt;" style="shape=xor;whiteSpace=wrap;html=1;rotation=90;horizontal=0;fontSize=8;strokeColor=#FF9933;fontColor=#FF9933;" vertex="1" parent="1">
+        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-1" value="&lt;font style=&quot;font-size: 7px&quot;&gt;MemWrite&lt;br&gt;Or&lt;/font&gt;" style="shape=xor;whiteSpace=wrap;html=1;rotation=90;horizontal=0;fontSize=8;strokeColor=#FF9933;fontColor=#FF9933;" vertex="1" parent="1">
           <mxGeometry x="-419.5" y="377" width="33" height="37" as="geometry" />
         </mxCell>
         <mxCell id="rZ_rh7BoH4JBTpEfDPfL-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=7;entryX=0.175;entryY=0.75;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#FF9933;fontColor=#FF9933;" edge="1" parent="1" target="rZ_rh7BoH4JBTpEfDPfL-1">
@@ -1488,27 +1488,31 @@
             <mxPoint x="7.469999999999999" y="-0.030000000000000027" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=7;strokeColor=#FF9933;fontColor=#FF9933;entryX=0.175;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="UKt0rCFPghXX4FOB7-Do-4">
+        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=7;strokeColor=#FF9933;fontColor=#FF9933;entryX=0.175;entryY=0.25;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="UKt0rCFPghXX4FOB7-Do-4" target="rZ_rh7BoH4JBTpEfDPfL-26">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-409.25" y="695.9950000000003" as="targetPoint" />
             <Array as="points">
               <mxPoint x="-533" y="913" />
               <mxPoint x="-533" y="744" />
-              <mxPoint x="-409" y="744" />
+              <mxPoint x="-412" y="744" />
             </Array>
             <mxPoint x="-576" y="928.27" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="rZ_rh7BoH4JBTpEfDPfL-25" value="EXE_MEM_ReadfromMem" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#FF9933;" vertex="1" connectable="0" parent="rZ_rh7BoH4JBTpEfDPfL-24">
           <mxGeometry x="0.3576" y="-4" relative="1" as="geometry">
-            <mxPoint x="19.75" y="-3.75" as="offset" />
+            <mxPoint x="28.66" y="-5" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=9;strokeColor=#FF9933;fontColor=#FF9933;" edge="1" parent="1" source="rZ_rh7BoH4JBTpEfDPfL-26" target="WTMd-Kf-NOUrpAkrOXLC-4">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-27" value="MEM_memRead" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=9;strokeColor=#FF9933;fontColor=#FF9933;" edge="1" parent="1" source="rZ_rh7BoH4JBTpEfDPfL-26">
+          <mxGeometry x="-0.4419" relative="1" as="geometry">
+            <mxPoint x="-403" y="672.0000000000002" as="sourcePoint" />
+            <mxPoint x="-403" y="650.5" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-26" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Address&lt;br style=&quot;font-size: 8px;&quot;&gt;Or&lt;/font&gt;" style="shape=xor;whiteSpace=wrap;html=1;rotation=-90;horizontal=0;fontSize=8;strokeColor=#FF9933;fontColor=#FF9933;" vertex="1" parent="1">
-          <mxGeometry x="-419.5" y="669" width="33" height="37" as="geometry" />
+        <mxCell id="rZ_rh7BoH4JBTpEfDPfL-26" value="&lt;font style=&quot;font-size: 7px&quot;&gt;MemRead&lt;br&gt;Or&lt;/font&gt;" style="shape=xor;whiteSpace=wrap;html=1;rotation=-90;horizontal=0;fontSize=8;strokeColor=#FF9933;fontColor=#FF9933;" vertex="1" parent="1">
+          <mxGeometry x="-419.5" y="684.75" width="33" height="37" as="geometry" />
         </mxCell>
         <mxCell id="rZ_rh7BoH4JBTpEfDPfL-29" value="EXE_R_memtoReg" style="endArrow=classic;html=1;strokeColor=#9933FF;fontColor=#9933FF;fontSize=9;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="UKt0rCFPghXX4FOB7-Do-15">
           <mxGeometry x="0.5585" width="50" height="50" relative="1" as="geometry">
