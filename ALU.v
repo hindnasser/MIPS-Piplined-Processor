@@ -200,45 +200,45 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 				begin
 					if(Op1[63]^Op2[63])//different signs
 					begin
-						if(Op1[63:52] > Op2[63:52])//Op1's exp is larger
+						if(Op1[62:52] > Op2[62:52])//Op1's exp is larger
 						begin
 							mantissa1 = {1'b1,Op1[51:0]};
-							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[63:52]-Op2[63:52]);
+							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[62:52]-Op2[62:52]);
 							mantissa1 = mantissa1 - mantissa2;
 							EXE_Result[63] = Op1[63];
-							EXE_Result[63:52] = Op1[63:52];
+							EXE_Result[62:52] = Op1[62:52];
 							while(!mantissa1[52])
 							begin
 								mantissa1 = mantissa1<<1;
-								EXE_Result[63:52] = EXE_Result[63:52]-1;
+								EXE_Result[62:52] = EXE_Result[62:52]-1;
 							end
 							EXE_Result[51:0] <= mantissa1;
 						end
 						else
 						begin
-							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[63:52]-Op1[63:52]);
+							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[62:52]-Op1[62:52]);
 							mantissa2 = {1'b1,Op2[51:0]};
 							mantissa1 = mantissa2 - mantissa1;
 							EXE_Result[63] = Op2[63];
-							EXE_Result[63:52] = Op2[63:52];
+							EXE_Result[62:52] = Op2[62:52];
 							while(!mantissa1[52])
 							begin
 								mantissa1 = mantissa1<<1;
-								EXE_Result[63:52] = EXE_Result[63:52]-1;
+								EXE_Result[62:52] = EXE_Result[62:52]-1;
 							end
 							EXE_Result[51:0] <= mantissa1;
 						end
 					end
 					else//same sign
 					begin
-						if(Op1[63:52] > Op2[63:52])//Op1's exp is larger
+						if(Op1[62:52] > Op2[62:52])//Op1's exp is larger
 						begin 
 							mantissa1 = {1'b1,Op1[51:0]};
-							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[63:52]-Op2[63:52]);
+							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[62:52]-Op2[62:52]);
 							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[24] means overflow
-							EXE_Result[51:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[63:52] <= Op1[63:52]+mantissa1[24];
+							// mantissa1[53] means overflow
+							EXE_Result[51:0] <= mantissa1>>mantissa1[53];
+							EXE_Result[62:52] <= Op1[62:52]+mantissa1[53];
 							EXE_Result[63] <= Op1[63];
 
 						end
@@ -247,9 +247,9 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[63:52]-Op1[63:52]);
 							mantissa2 = {1'b1,Op2[51:0]};
 							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[24] means overflow
-							EXE_Result[51:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[63:52] <= Op2[63:52]+mantissa1[24];
+							// mantissa1[53] means overflow
+							EXE_Result[51:0] <= mantissa1>>mantissa1[53];
+							EXE_Result[62:52] <= Op2[62:52]+mantissa1[53];
 							EXE_Result[63] <= Op1[63];
 						end
 					end
