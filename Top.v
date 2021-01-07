@@ -36,7 +36,7 @@ module Top (PC_value);
 	wire [4:0] ID_EXE_Shamt, ID_EXE_Rd, ID_EXE_RtReg, ID_EXE_RsReg; 
 	
 	// EXE Stage
-	wire [31:0] ALUOut_EXEC, Op2Src, Op1, Op2, BranchAdd;
+	wire [31:0] ALUOut_EXEC, Op2Src, Op1Src, Op1, Op2, BranchAdd;
 	wire EXE_Zero, Overflow, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg;
 	wire [1:0] forwardOp1, forwardOp2;
 	wire [4:0] EXE_DstReg;
@@ -45,7 +45,7 @@ module Top (PC_value);
 	
 	// EXE_MEM_Register
 	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt; 
-	wire EXE_MEM_Byte, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead, EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem; 
+	wire EXE_MEM_JmpandLink, EXE_MEM_Byte, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead, EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem; 
 	wire [4:0] EXE_MEM_DstReg;
 	
 	// MEM Stage
@@ -55,7 +55,7 @@ module Top (PC_value);
 	// MEM_ WB_Register
 	wire [31:0] MEM_WB_MemData, MEM_WB_ALUData;
 	wire [4:0]  MEM_WB_DstReg;
-	wire MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_R_memtoReg;
+	wire MEM_WB_JmpandLink, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_R_memtoReg;
 	
 	// WB Stage
 	wire [31:0] WB_Data;
@@ -95,8 +95,8 @@ module Top (PC_value);
 	SignExtension se (SignedImmediate, IF_ID_Immediate);
 	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
 	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
-	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, MEM_WB_RegWrite);//here
-	HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump);
+	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, MEM_WB_RegWrite, MEM_WB_JmpandLink);//here
+	HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump, JmpandLink);
 	
 	ShiftLeft2 shiftleftjump (JumpShiftedAddress, IF_ID_Address);
 	Jumpj jump (JumpAddress, JumpShiftedAddress, IF_ID_PCplus4);
@@ -113,7 +113,8 @@ module Top (PC_value);
 									
 // EXE Stage
 	Op2Src_MUX op2srcmux (Op2Src, ID_EXE_Rt, ID_EXE_ExtendedImm, ID_EXE_ALUSrc);
-	ForOp1_MUX forop1mux (Op1, ID_EXE_Rs, WB_Data, EXE_MEM_Result, forwardOp1);
+	Op1Src_MUX op1srcmux (Op1Src, ID_EXE_Rs, ID_EXE_PCplus4, ID_EXE_JmpandLink);
+	ForOp1_MUX forop1mux (Op1, Op1Src, WB_Data, EXE_MEM_Result, forwardOp1);
 	ForOp2_MUX forop2mux (Op2, Op2Src, WB_Data, EXE_MEM_Result, forwardOp2);
 	DstReg_MUX dstregmux (EXE_DstReg, ID_EXE_RtReg, ID_EXE_Rd, ID_EXE_RegDst);
 
@@ -129,7 +130,7 @@ module Top (PC_value);
   
 // EXE_MEM_Register
 	EXE_MEM_Register exememr(EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem, EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, 
-									 EXE_MEM_Byte, ID_EXE_Byte, ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg, clk);
+									 EXE_MEM_Byte, EXE_MEM_JmpandLink, ID_EXE_JmpandLink, ID_EXE_Byte, ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg, clk);
 
 // MEM Stage
 	ORa MemWriteOr (MEM_memWrite, EXE_MEM_MemWrite, EXE_MEM_WritetoMem);
@@ -137,7 +138,7 @@ module Top (PC_value);
 	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MEM_memRead, MEM_memWrite, EXE_MEM_Byte, clk);
 	
 // MEM_WB_Register
-	MEM_WB_Register memwbreg (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
+	MEM_WB_Register memwbreg (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_JmpandLink, EXE_MEM_JmpandLink, MEM_Result, EXE_MEM_Result,
 						           EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_R_memtoReg, clk);
    	
 // WB Stage
