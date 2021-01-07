@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-01-07T19:14:07.719Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" etag="6rkbqjA791kpDx6c_65w" version="14.1.8" type="github">
+<mxfile host="app.diagrams.net" modified="2021-01-07T19:29:30.047Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36" etag="Z-fuIFjSa-8TDUGzGkjo" version="14.1.8" type="github">
   <diagram id="FUZhbVknojldcqYKG9fJ" name="Page-1">
     <mxGraphModel dx="3201" dy="483" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="none" math="0" shadow="0">
       <root>
@@ -305,17 +305,18 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="SEGCCmpputjKbnr32Vpx-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=7;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#9933FF;fontColor=#9933FF;" parent="1" source="UKt0rCFPghXX4FOB7-Do-15" edge="1">
+        <mxCell id="SEGCCmpputjKbnr32Vpx-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontSize=7;exitX=0.755;exitY=0.083;exitDx=0;exitDy=0;exitPerimeter=0;strokeColor=#9933FF;fontColor=#9933FF;" parent="1" source="UKt0rCFPghXX4FOB7-Do-15" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-635" y="926" as="targetPoint" />
+            <mxPoint x="-635" y="812" as="targetPoint" />
             <Array as="points">
-              <mxPoint x="-935" y="926" />
+              <mxPoint x="-914" y="812" />
+              <mxPoint x="-635" y="812" />
             </Array>
           </mxGeometry>
         </mxCell>
         <mxCell id="SEGCCmpputjKbnr32Vpx-20" value="EXE_WritetoMem" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=9;fontColor=#9933FF;" parent="SEGCCmpputjKbnr32Vpx-19" vertex="1" connectable="0">
           <mxGeometry x="0.3576" y="-4" relative="1" as="geometry">
-            <mxPoint x="39.17" y="-7" as="offset" />
+            <mxPoint x="35.4" y="-4" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="UKt0rCFPghXX4FOB7-Do-15" value="&lt;font style=&quot;font-size: 15px&quot;&gt;ALU&lt;br&gt;control&lt;/font&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_2;whiteSpace=wrap;strokeColor=#9933FF;fontColor=#9933FF;" parent="1" vertex="1">
