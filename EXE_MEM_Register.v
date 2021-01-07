@@ -4,13 +4,12 @@ module EXE_MEM_Register (EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_Writet
 // input
 	input [31:0] EXE_Result, ID_EXE_Rt;
 	input [4:0] EXE_DstReg;
-	input ID_EXE_Byte, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg,EXE_MEM_JmpandLink, clk;
-//	clk;
+	input ID_EXE_Byte, MemReadIn, MemWriteIn, MemtoRegIn, RegWriteIn, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg, ID_EXE_JmpandLink, clk;
 	
 // output
 	output reg [31:0] EXE_MEM_Result, EXE_MEM_Rt;
 	output reg [4:0] EXE_MEM_DstReg;
-	output reg EXE_MEM_Byte, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem, EXE_MEM_R_memtoReg, ID_EXE_JmpandLink;
+	output reg EXE_MEM_Byte, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem, EXE_MEM_JmpandLink, EXE_MEM_R_memtoReg;
 	
 	always @(posedge clk)
 		begin
