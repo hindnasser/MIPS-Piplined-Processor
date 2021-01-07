@@ -1,7 +1,7 @@
-module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB_Data, RegWrite);
+module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB_Data, RegWrite, MEM_WB_JmpandLink);
 //input
 	input [4:0] IF_ID_Rs, IF_ID_Rt, WB_DstReg;
-	input clk, RegWrite;
+	input clk, RegWrite, MEM_WB_JmpandLink;
 	input [31:0] WB_Data;
 //output	
 	output reg [31:0] ReadData1, ReadData2;
@@ -21,7 +21,11 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 //writing data to the register
 	always @(*)
 		begin
-			if(RegWrite && WB_DstReg!=0)
+		
+			if(RegWrite && MEM_WB_JmpandLink)
+				registers_i[31] <= WB_Data;
+				
+			else if(RegWrite && WB_DstReg!=0)
 				begin
 					registers_i[WB_DstReg] <= WB_Data;
 				end
