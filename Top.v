@@ -12,7 +12,7 @@ module Top (PC_value);
 
 	// IF Stage
 	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc, PCSrc2;
-	wire PC_Src;
+   wire PC_Src;
 	reg [31:0] program_counter; 
 	
 	//IF_ID_Register
@@ -37,15 +37,15 @@ module Top (PC_value);
 	
 	// EXE Stage
 	wire [31:0] ALUOut_EXEC, Op2Src, Op1, Op2, BranchAdd;
-	wire EXE_Zero, Overflow;
+	wire EXE_Zero, Overflow, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg;
 	wire [1:0] forwardOp1, forwardOp2;
 	wire [4:0] EXE_DstReg;
-	wire [3:0] operation;
+	wire [4:0] operation;
 	
 	
 	// EXE_MEM_Register
 	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt; 
-	wire EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite; 
+	wire EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead; 
 	wire [4:0] EXE_MEM_DstReg;
 	
 	// MEM Stage
@@ -59,6 +59,7 @@ module Top (PC_value);
 	
 	// WB Stage
 	wire [31:0] WB_Data;
+	wire WB_memtoReg;
 	
 // IF Stage
 
@@ -118,7 +119,7 @@ module Top (PC_value);
 
 	ShiftLeft2 shiftleftbranch (BranchAdd, ID_EXE_ExtendedImm);
 	AddressAdder addadd (EXE_BranchAddress, ID_EXE_PCplus4, BranchAdd);
-	ALUcontrol aluc (operation, ID_EXE_ALUop, ID_EXE_Func);
+	ALUcontrol aluc ( EXE_R_memtoReg, EXE_ReadfromMem, EXE_WritetoMem, operation, ID_EXE_ALUop, ID_EXE_Func);
 	ALU alu (ALUOut_EXEC, EXE_Zero, Overflow, Op1, Op2, operation, ID_EXE_Shamt);
 	ForwardingUnit forunit (forwardOp1, forwardOp2, ID_EXE_RsReg, ID_EXE_RtReg, EXE_MEM_DstReg, EXE_MEM_RegWrite, MEM_WB_DstReg, MEM_WB_RegWrite);
 	BranchEqualAnd beand (BranchEqualResult, EXE_Zero, ID_EXE_BranchEqual);
@@ -127,42 +128,52 @@ module Top (PC_value);
 	
   
 // EXE_MEM_Register
-	EXE_MEM_Register exememr(EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, 
-									 ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, clk);
+	EXE_MEM_Register exememr(EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem, EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, 
+									 ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg, clk);
 
 // MEM Stage
-	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, clk);
+	ORa MemWriteOr (MEM_memWrite, EXE_MEM_MemWrite, EXE_MEM_WritetoMem);
+	ORa MemReadOr (MEM_memRead, EXE_MEM_MemRead, EXE_MEM_ReadfromMem);
+	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MEM_memRead, MEM_memWrite, clk);
 	
 // MEM_WB_Register
-	MEM_WB_Register memwbreg (MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
-						           EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, clk);
+	MEM_WB_Register memwbreg (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
+						           EXE_MEM_DstReg, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_R_memtoReg, clk);
    	
 // WB Stage
-	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_MemtoReg);
+	ORa MemtoRegOr (WB_memtoReg, MEM_WB_MemtoReg, MEM_WB_R_memtoReg);
+	WB_MUX wbmux (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, WB_memtoReg);
 	
 endmodule
 
-module tst_5; 
+module arethmatic1; 
 	reg [31:0]PC_VALUE_;		  
 	reg [31:0] cycle;
 	Top top(PC_VALUE_);
 	initial begin
-		PC_VALUE_ <= 500;	  
+		PC_VALUE_ <= 320;	  
 		cycle <= 1;
 	end				   
 	always @(posedge top.clk) begin	
-if (cycle== 16)	
-begin
+	
+	if (cycle == 6)
+	begin
 		$display("cycle: %d" , cycle);
 		$display("PC: %d",top.program_counter);				   
 		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 30");
-		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 20");		
-		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 6");		
-
+		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 15");
+		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
+		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
+		$display("$s4: %d" , top.Op2Src, " The correct value is 2");
+		$display("$s5: %d" , top.Op2, " The correct value is 10");
+		$display("$s6: %b" , top.regFile.registers_i[24], " The correct value is 11");
+		
 		$finish;
 		end
-		cycle = cycle + 1;
+		
+		
+	cycle = cycle + 1;
+		
 	end
 endmodule
 

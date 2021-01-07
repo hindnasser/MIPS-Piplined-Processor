@@ -1,13 +1,12 @@
-module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
+module ALUcontrol ( EXE_R_memtoReg, EXE_ReadfromMem, EXE_WritetoMem, operation, opcode, funct);
 
 // input 
 	input [5:0] funct;
-	input [3:0] opcode;
-	input EXE_ReadfromMem, EXE_WritetoMem;
+	input [3:0] opcode; 
 	
 // output
 	output reg [4:0] operation;
-	
+	output reg EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg;
 	
 	always @(*)
 		begin
@@ -17,6 +16,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 					operation <= 0;
 					EXE_ReadfromMem <= 0;
 					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
 				end
 				
 			// load upper Imm.
@@ -25,6 +25,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 					operation <= 5'h1;
 					EXE_ReadfromMem <= 0;
 					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
 				end
 				
 			// load word, load byte unsigned, store byte, store word, addi
@@ -33,6 +34,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 					operation <= 5'h3;
 					EXE_ReadfromMem <= 0;
 					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
 				end
 				
 			// andi
@@ -41,6 +43,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 					operation <= 5'h4;
 					EXE_ReadfromMem <= 0;
 					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
 				end
 				
 			// beq, bnq, 
@@ -49,6 +52,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 					operation <= 5'h5;
 					EXE_ReadfromMem <= 0;
 					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
 				end
 				
 			// Ori
@@ -57,6 +61,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 					operation <= 5'h2;
 					EXE_ReadfromMem <= 0;
 					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
 				end
 				
 			4'h2:
@@ -69,6 +74,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <=5'h3;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// sub
@@ -77,6 +83,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <=5'h5;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// Or
@@ -85,6 +92,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <=5'h2;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// and
@@ -93,6 +101,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'h4;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// jr
@@ -101,6 +110,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
 								operation <= 5'hb;
+								EXE_R_memtoReg <= 0;
 							end
 						
 						// load new word
@@ -109,6 +119,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'h3;
 								EXE_ReadfromMem <= 1;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 1;
 							end
 						
 						// Nor	
@@ -117,6 +128,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'ha;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// set less than
@@ -125,6 +137,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
 								operation <= 5'h8;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// set less than unsigned
@@ -133,6 +146,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'h9;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// Shift left 
@@ -141,6 +155,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'h6;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 						
 						//Shift right
@@ -149,6 +164,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'h7;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
 							end
 							
 						// store word new
@@ -157,6 +173,7 @@ module ALUcontrol (operation, opcode, funct, EXE_ReadfromMem, EXE_WritetoMem);
 								operation <= 5'h3;
 								EXE_ReadfromMem <= 0;
 								EXE_WritetoMem <= 1;
+								EXE_R_memtoReg <= 0;
 							end						
 					endcase
 			end

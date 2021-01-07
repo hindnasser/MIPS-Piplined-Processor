@@ -1,19 +1,19 @@
 module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 
 // input
-	input [63:0] Op1, Op2;
-	//note that Op1 takes : rs
-	//	    Op2 takes : immediate , rt
+	input [31:0] Op1, Op2;
+	// note that Op1 takes : rs
+	// Op2 takes : immediate , rt
 	input [4:0] operation;
 	input [4:0] shamt;
-	//input clk;
 	
 // output
-	output reg [63:0] EXE_Result;
+	output reg [31:0] EXE_Result;
 	output reg EXE_Zero, Overflow;
 	
 // intermediate stages
-	reg [63:0] mantissa1,mantissa2;
+//	reg [63:0] mantissa1,mantissa2;
+
 
 // cases
 
@@ -31,7 +31,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//shift left 16 for Op2
 			5'h1:
 				begin
-					EXE_Result <= Op2 << 16;
+					EXE_Result <= {Op2[15:0], 16'h0};
 					EXE_Zero <= 0;
 					Overflow <= 0;
 				end
@@ -135,150 +135,152 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 					Overflow <=0;
 				end
 			
-			//FP Add single
-			5'hc:
-				begin
-					if(Op1[31]^Op2[31])//different signs
-					begin
-						if(Op1[30:23] > Op2[30:23])//Op1's exp is larger
-						begin
-							mantissa1 = {1'b1,Op1[22:0]};
-							mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
-							mantissa1 = mantissa1 - mantissa2;
-							EXE_Result[31] = Op1[31];
-							EXE_Result[30:23] = Op1[30:23];
-							while(!mantissa1[23])
-							begin
-								mantissa1 = mantissa1<<1;
-								EXE_Result[30:23] = EXE_Result[30:23]-1;
-							end
-							EXE_Result[22:0] <= mantissa1;
-						end
-						else
-						begin
-							mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
-							mantissa2 = {1'b1,Op2[22:0]};
-							mantissa1 = mantissa2 - mantissa1;
-							EXE_Result[31] = Op2[31];
-							EXE_Result[30:23] = Op2[30:23];
-							while(!mantissa1[23])
-							begin
-								mantissa1 = mantissa1<<1;
-								EXE_Result[30:23] = EXE_Result[30:23]-1;
-							end
-							EXE_Result[22:0] <= mantissa1;
-						end
-					end
-					else//same sign
-					begin
-						if(Op1[30:23] > Op2[30:23])//Op1's exp is larger
-						begin 
-							mantissa1 = {1'b1,Op1[22:0]};
-							mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
-							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[24] means overflow
-							EXE_Result[22:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[30:23] <= Op1[30:23]+mantissa1[24];
-							EXE_Result[31] <= Op1[31];
-
-						end
-						else
-						begin
-							mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
-							mantissa2 = {1'b1,Op2[22:0]};
-							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[24] means overflow
-							EXE_Result[22:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[30:23] <= Op2[30:23]+mantissa1[24];
-							EXE_Result[31] <= Op1[31];
-						end
-					end
-				end	
-
-			//FP Add double
-			5'hd:
-				begin
-					if(Op1[63]^Op2[63])//different signs
-					begin
-						if(Op1[62:52] > Op2[62:52])//Op1's exp is larger
-						begin
-							mantissa1 = {1'b1,Op1[51:0]};
-							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[62:52]-Op2[62:52]);
-							mantissa1 = mantissa1 - mantissa2;
-							EXE_Result[63] = Op1[63];
-							EXE_Result[62:52] = Op1[62:52];
-							while(!mantissa1[52])
-							begin
-								mantissa1 = mantissa1<<1;
-								EXE_Result[62:52] = EXE_Result[62:52]-1;
-							end
-							EXE_Result[51:0] <= mantissa1;
-						end
-						else
-						begin
-							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[62:52]-Op1[62:52]);
-							mantissa2 = {1'b1,Op2[51:0]};
-							mantissa1 = mantissa2 - mantissa1;
-							EXE_Result[63] = Op2[63];
-							EXE_Result[62:52] = Op2[62:52];
-							while(!mantissa1[52])
-							begin
-								mantissa1 = mantissa1<<1;
-								EXE_Result[62:52] = EXE_Result[62:52]-1;
-							end
-							EXE_Result[51:0] <= mantissa1;
-						end
-					end
-					else//same sign
-					begin
-						if(Op1[62:52] > Op2[62:52])//Op1's exp is larger
-						begin 
-							mantissa1 = {1'b1,Op1[51:0]};
-							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[62:52]-Op2[62:52]);
-							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[53] means overflow
-							EXE_Result[51:0] <= mantissa1>>mantissa1[53];
-							EXE_Result[62:52] <= Op1[62:52]+mantissa1[53];
-							EXE_Result[63] <= Op1[63];
-
-						end
-						else
-						begin
-							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[63:52]-Op1[63:52]);
-							mantissa2 = {1'b1,Op2[51:0]};
-							mantissa1 = mantissa1 + mantissa2;
-							// mantissa1[53] means overflow
-							EXE_Result[51:0] <= mantissa1>>mantissa1[53];
-							EXE_Result[62:52] <= Op2[62:52]+mantissa1[53];
-							EXE_Result[63] <= Op1[63];
-						end
-					end
-				end	
-
-			//Shift Right Arith
-			5'he:
-				begin
-					EXE_Result <= Op2 >>> shamt;
-					EXE_Zero <= 0;
-					Overflow <= 0;
-				end
-
-			//Multiply
-			5'hf:
-				begin
-					EXE_Result = Op1[31:0]*Op2[31:0];
-					EXE_Zero <= (EXE_Result==0);
-					Overflow <= 0;
-				end
-
-			//Divide 
-			5'h10:
-				begin
-					EXE_Result[31:0]  = $signed(Op1[31:0])/$signed(Op2[31:0]);
-					EXE_Result[63:32] = $signed(Op1[31:0])%$signed(Op2[31:0]);
-					EXE_Zero <= (EXE_Result==0);
-					Overflow <= 0;
-				end
+//			//FP Add single
+//			5'hc:
+//				begin
+//					if(Op1[31]^Op2[31])//different signs
+//					begin
+//						if(Op1[30:23] > Op2[30:23])//Op1's exp is larger
+//							begin
+//								mantissa1 = {1'b1,Op1[22:0]};
+//								mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
+//								mantissa1 = mantissa1 - mantissa2;
+//								EXE_Result[31] = Op1[31];
+//								EXE_Result[30:23] = Op1[30:23];
+//								while(!mantissa1[23])
+//									begin
+//										mantissa1 = mantissa1<<1;
+//										EXE_Result[30:23] = EXE_Result[30:23]-1;
+//									end
+//								EXE_Result[22:0] <= mantissa1;
+//							end
+//						else
+//							begin
+//								mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
+//								mantissa2 = {1'b1,Op2[22:0]};
+//								//above may need blocking possible errors may happen
+//								mantissa1 = mantissa2 - mantissa1;
+//								EXE_Result[31] = Op2[31];
+//								EXE_Result[30:23] = Op2[30:23];
+//								while(!mantissa1[23])
+//									begin
+//										mantissa1 = mantissa1<<1;
+//										EXE_Result[30:23] = EXE_Result[30:23]-1;
+//									end
+//								EXE_Result[22:0] <= mantissa1;
+//							end
+//					end
+//					else//same sign
+//					begin
+//						if(Op1[30:23] > Op2[30:23])//Op1's exp is larger
+//							begin 
+//								mantissa1 = {1'b1,Op1[22:0]};
+//								mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
+//								//above may need blocking possible errors may happen
+//								mantissa1 = mantissa1 + mantissa2;
+//								// mantissa1[24] means overflow
+//								EXE_Result[22:0] <= mantissa1>>mantissa1[24];
+//								EXE_Result[30:23] <= Op1[30:23]+mantissa1[24];
+//								EXE_Result[31] <= Op1[31];
+//
+//							end
+//						else
+//							begin
+//								mantissa1 = {1'b1,Op1[22:0]}>>(Op2[30:23]-Op1[30:23]);
+//								mantissa2 = {1'b1,Op2[22:0]};
+//								//above may need blocking possible errors may happen
+//								mantissa1 = mantissa1 + mantissa2;
+//								// mantissa1[24] means overflow
+//								EXE_Result[22:0] <= mantissa1>>mantissa1[24];
+//								EXE_Result[30:23] <= Op2[30:23]+mantissa1[24];
+//								EXE_Result[31] <= Op1[31];
+//							end
+//					end
+//				end	
+//			//FP Add double
+//			5'hd:
+//				begin
+//					if(Op1[63]^Op2[63])//different signs
+//					begin
+//						if(Op1[62:52] > Op2[62:52])//Op1's exp is larger
+//						begin
+//							mantissa1 = {1'b1,Op1[51:0]};
+//							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[62:52]-Op2[62:52]);
+//							mantissa1 = mantissa1 - mantissa2;
+//							EXE_Result[63] = Op1[63];
+//							EXE_Result[62:52] = Op1[62:52];
+//							while(!mantissa1[52])
+//							begin
+//								mantissa1 = mantissa1<<1;
+//								EXE_Result[62:52] = EXE_Result[62:52]-1;
+//							end
+//							EXE_Result[51:0] <= mantissa1;
+//						end
+//						else
+//						begin
+//							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[62:52]-Op1[62:52]);
+//							mantissa2 = {1'b1,Op2[51:0]};
+//							mantissa1 = mantissa2 - mantissa1;
+//							EXE_Result[63] = Op2[63];
+//							EXE_Result[62:52] = Op2[62:52];
+//							while(!mantissa1[52])
+//							begin
+//								mantissa1 = mantissa1<<1;
+//								EXE_Result[62:52] = EXE_Result[62:52]-1;
+//							end
+//							EXE_Result[51:0] <= mantissa1;
+//						end
+//					end
+//					else//same sign
+//					begin
+//						if(Op1[62:52] > Op2[62:52])//Op1's exp is larger
+//						begin 
+//							mantissa1 = {1'b1,Op1[51:0]};
+//							mantissa2 = {1'b1,Op2[51:0]}>>(Op1[62:52]-Op2[62:52]);
+//							mantissa1 = mantissa1 + mantissa2;
+//							// mantissa1[53] means overflow
+//							EXE_Result[51:0] <= mantissa1>>mantissa1[53];
+//							EXE_Result[62:52] <= Op1[62:52]+mantissa1[53];
+//							EXE_Result[63] <= Op1[63];
+//
+//						end
+//						else
+//						begin
+//							mantissa1 = {1'b1,Op1[51:0]}>>(Op2[63:52]-Op1[63:52]);
+//							mantissa2 = {1'b1,Op2[51:0]};
+//							mantissa1 = mantissa1 + mantissa2;
+//							// mantissa1[53] means overflow
+//							EXE_Result[51:0] <= mantissa1>>mantissa1[53];
+//							EXE_Result[62:52] <= Op2[62:52]+mantissa1[53];
+//							EXE_Result[63] <= Op1[63];
+//						end
+//					end
+//				end	
+//
+//			//Shift Right Arith
+//			5'he:
+//				begin
+//					EXE_Result <= Op2 >>> shamt;
+//					EXE_Zero <= 0;
+//					Overflow <= 0;
+//				end
+//
+//			//Multiply
+//			5'hf:
+//				begin
+//					EXE_Result = Op1[31:0]*Op2[31:0];
+//					EXE_Zero <= (EXE_Result==0);
+//					Overflow <= 0;
+//				end
+//
+//			//Divide 
+//			5'h10:
+//				begin
+//					EXE_Result[31:0]  = $signed(Op1[31:0])/$signed(Op2[31:0]);
+//					EXE_Result[63:32] = $signed(Op1[31:0])%$signed(Op2[31:0]);
+//					EXE_Zero <= (EXE_Result==0);
+//					Overflow <= 0;
+//				end
 		endcase
 		
 	end

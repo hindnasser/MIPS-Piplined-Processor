@@ -79,7 +79,7 @@ module ControlUnit (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWr
 						BranchEqual <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 1; //extended
-						Issigned <= 0;
+						Issigned <= 1;
 						ALUop <= 4'hb; //sll 16 for op2 
 					end
 					
