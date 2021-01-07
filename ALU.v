@@ -375,6 +375,14 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 								end
 						end
 				end
+			
+			// Passing rs for Jal
+			5'h16:
+				begin
+					EXE_Result <= Op1;
+					EXE_Zero <= 0;
+					Overflow <=0;
+				end
 		endcase
 		
 	end
