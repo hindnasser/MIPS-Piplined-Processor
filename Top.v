@@ -12,7 +12,7 @@ module Top (PC_value);
 
 	// IF Stage
 	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc, PCSrc2;
-        wire PC_Src;
+	wire PC_Src;
 	reg [31:0] program_counter; 
 	
 	//IF_ID_Register
