@@ -1,8 +1,8 @@
-module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MemRead, MemWrite, clk);
+module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MemRead, MemWrite, EXE_MEM_Byte, clk);
 
 //input
 	input [31:0] EXE_MEM_Result, EXE_MEM_Rt;
-	input MemRead, MemWrite, clk;
+	input MemRead, MemWrite, EXE_MEM_Byte, clk;
 	
 //output
 	output reg [31:0] MEM_Result;
@@ -37,10 +37,16 @@ module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MemRead, MemWrite, cl
 	always @ (*) begin
 		if(MemWrite == 1)
 			begin
-				mem[address+3] <= EXE_MEM_Rt[7:0];
-				mem[address+2] <= EXE_MEM_Rt[15:8];
-				mem[address+1] <= EXE_MEM_Rt [23:16];
-				mem[address] <= EXE_MEM_Rt [31:17];
+				if(EXE_MEM_Byte)
+					mem[address+3] <= EXE_MEM_Rt[7:0];
+				
+				else
+					begin
+						mem[address+3] <= EXE_MEM_Rt[7:0];
+						mem[address+2] <= EXE_MEM_Rt[15:8];
+						mem[address+1] <= EXE_MEM_Rt [23:16];
+						mem[address] <= EXE_MEM_Rt [31:17];
+					end
 			end 
 end
 		
@@ -48,7 +54,10 @@ end
 	always @(negedge clk)begin
 		if(MemRead == 1) 
 			begin
-				MEM_Result <= { mem[address], mem[address+1], mem[address+2], mem[address+3]};
+				if(EXE_MEM_Byte)
+					MEM_Result <= {24'b0, mem[address+3]};
+				else
+					MEM_Result <= { mem[address], mem[address+1], mem[address+2], mem[address+3]};
 			end 
 end
 	
