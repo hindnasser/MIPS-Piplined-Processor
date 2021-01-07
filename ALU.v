@@ -14,7 +14,6 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 	
 // intermediate stages
 	reg [63:0] mantissa1,mantissa2;
-  	real first,second;
 
 // cases
 
