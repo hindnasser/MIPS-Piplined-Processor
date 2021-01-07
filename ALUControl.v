@@ -18,6 +18,14 @@ module ALUcontrol ( EXE_R_memtoReg, EXE_ReadfromMem, EXE_WritetoMem, operation, 
 					EXE_WritetoMem <= 0;
 					EXE_R_memtoReg <= 0;
 				end
+			// Jump and Link
+			4'h7:
+				begin
+					operation <= 5'h16;
+					EXE_ReadfromMem <= 0;
+					EXE_WritetoMem <= 0;
+					EXE_R_memtoReg <= 0;
+				end
 				
 			// load upper Imm.
 			4'hb:
