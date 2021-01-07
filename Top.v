@@ -10,11 +10,6 @@ module Top (PC_value);
 	
 // wires 
 
-	// IF Stage
-	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc, PCSrc2;
-   wire PC_Src;
-	reg [31:0] program_counter; 
-	
 	//IF_ID_Register
 	wire [4:0] IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Shamt;
 	wire [5:0] IF_ID_Func, IF_ID_Opcode;
@@ -45,17 +40,17 @@ module Top (PC_value);
 	
 	// EXE_MEM_Register
 	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt; 
-	wire EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead; 
+	wire EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead, EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem; 
 	wire [4:0] EXE_MEM_DstReg;
 	
 	// MEM Stage
 	wire [31:0] MEM_Result;
-	wire BranchEqualResult, BranchnotEqualResult;
+	wire BranchEqualResult, BranchnotEqualResult, MEM_R_memtoReg;
 	
 	// MEM_ WB_Register
 	wire [31:0] MEM_WB_MemData, MEM_WB_ALUData;
 	wire [4:0]  MEM_WB_DstReg;
-	wire MEM_WB_MemtoReg, MEM_WB_RegWrite;
+	wire MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_R_memtoReg;
 	
 	// WB Stage
 	wire [31:0] WB_Data;
