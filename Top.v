@@ -10,6 +10,11 @@ module Top (PC_value);
 	
 // wires 
 
+	// IF Stage
+	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc, PCSrc2;
+   wire PC_Src;
+	reg [31:0] program_counter; 
+	
 	//IF_ID_Register
 	wire [4:0] IF_ID_Rs, IF_ID_Rt, IF_ID_Rd, IF_ID_Shamt;
 	wire [5:0] IF_ID_Func, IF_ID_Opcode;
@@ -19,11 +24,11 @@ module Top (PC_value);
 	
 	// ID Stage
 	wire [31:0] SignedImmediate, UnsignedImmediate, ReadData1, ReadData2, ExtendedImm, JumpShiftedAddress, JumpAddress;					
-	wire RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, Stall, PC_Write, IF_ID_Write;
+	wire Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, Stall, PC_Write, IF_ID_Write;
 	wire [3:0] ALUop;
 	
 	// ID_EXE_Register
-	wire ID_EXE_RegDst, ID_EXE_RegWrite, ID_EXE_MemtoReg, ID_EXE_JmpandLink, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual,
+	wire ID_EXE_Byte, ID_EXE_RegDst, ID_EXE_RegWrite, ID_EXE_MemtoReg, ID_EXE_JmpandLink, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual,
 		  ID_EXE_ALUSrc;
 	wire [3:0] ID_EXE_ALUop;
 	wire [5:0] ID_EXE_Func;
@@ -40,7 +45,7 @@ module Top (PC_value);
 	
 	// EXE_MEM_Register
 	wire [31:0] EXE_MEM_Result, EXE_MEM_BranchAddress, EXE_MEM_Rt; 
-	wire EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead, EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem; 
+	wire EXE_MEM_Byte, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, MEM_memWrite, MEM_memRead, EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem; 
 	wire [4:0] EXE_MEM_DstReg;
 	
 	// MEM Stage
@@ -86,7 +91,7 @@ module Top (PC_value);
 								 IF_ID_Address, IF_ID_PCplus4, instruction, PCplus4, clk, IF_ID_Write); 
 	
 // ID Stage
-	ControlUnit cu (RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, IF_ID_Opcode, Stall);
+	ControlUnit cu (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, floatop, Issigned, IF_ID_Opcode, Stall);
 	SignExtension se (SignedImmediate, IF_ID_Immediate);
 	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
 	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
@@ -101,7 +106,7 @@ module Top (PC_value);
 // ID_EXE_Register
 	ID_EXE_Register idexer (ID_EXE_Func, ID_EXE_PCplus4, ID_EXE_Rs, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RtReg, ID_EXE_RsReg, ID_EXE_ExtendedImm, ID_EXE_Shamt, ID_EXE_RegDst,
 									ID_EXE_RegWrite, ID_EXE_MemtoReg, ID_EXE_JmpandLink, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_BranchEqual, ID_EXE_BranchnotEqual, 
-									ID_EXE_ALUop, ID_EXE_ALUSrc, IF_ID_Shamt, IF_ID_Func, IF_ID_PCplus4, IF_ID_Rs, IF_ID_Rt, ReadData1, ReadData2, IF_ID_Rd, ExtendedImm,
+									ID_EXE_ALUop, ID_EXE_ALUSrc, ID_EXE_Byte, Byte, IF_ID_Shamt, IF_ID_Func, IF_ID_PCplus4, IF_ID_Rs, IF_ID_Rt, ReadData1, ReadData2, IF_ID_Rd, ExtendedImm,
 									RegDst, RegWrite, MemtoReg, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc, clk);
 									// change ReadData1 and ReadData2 to ID_Rs and ID_Rt after adding floating point registerFile
 									
@@ -124,12 +129,12 @@ module Top (PC_value);
   
 // EXE_MEM_Register
 	EXE_MEM_Register exememr(EXE_MEM_R_memtoReg, EXE_MEM_ReadfromMem, EXE_MEM_WritetoMem, EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_Rt, EXE_MEM_MemRead, EXE_MEM_MemWrite, EXE_MEM_MemtoReg, EXE_MEM_RegWrite, 
-									 ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg, clk);
+									 EXE_MEM_Byte, ID_EXE_Byte, ALUOut_EXEC, EXE_DstReg, ID_EXE_Rt, ID_EXE_MemRead, ID_EXE_MemWrite, ID_EXE_MemtoReg, ID_EXE_RegWrite, EXE_ReadfromMem, EXE_WritetoMem, EXE_R_memtoReg, clk);
 
 // MEM Stage
 	ORa MemWriteOr (MEM_memWrite, EXE_MEM_MemWrite, EXE_MEM_WritetoMem);
 	ORa MemReadOr (MEM_memRead, EXE_MEM_MemRead, EXE_MEM_ReadfromMem);
-	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MEM_memRead, MEM_memWrite, clk);
+	DataMemory DMem(MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MEM_memRead, MEM_memWrite, EXE_MEM_Byte, clk);
 	
 // MEM_WB_Register
 	MEM_WB_Register memwbreg (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_Result, EXE_MEM_Result,
