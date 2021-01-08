@@ -11,8 +11,8 @@ module Top (PC_value);
 // wires 
 
 	// IF Stage
-	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc, PCSrc2;
-   wire PC_Src;
+	wire [31:0] instruction,PCplus4, EXE_BranchAddress, PCSrc, PCSrc2, PCSrc1;
+   wire PC_Src, isJr;
 	reg [31:0] program_counter; 
 	
 	//IF_ID_Register
@@ -23,7 +23,7 @@ module Top (PC_value);
 	wire [31:0] IF_ID_PCplus4;
 	
 	// ID Stage
-	wire [31:0] SignedImmediate, UnsignedImmediate, ReadData1, ReadData2, ExtendedImm, JumpShiftedAddress, JumpAddress;					
+	wire [31:0] SignedImmediate, UnsignedImmediate, ReadData1, ReadData2, ExtendedImm, JumpShiftedAddress, JumpAddress, Ra;					
 	wire Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, Stall, PC_Write, IF_ID_Write;
 	wire [3:0] ALUop;
 	
@@ -79,9 +79,10 @@ module Top (PC_value);
 				program_counter <= PCSrc2;
 		end
    
-	
-	PC_MUX pcmux (PCSrc, PCplus4, EXE_BranchAddress, PC_Src); 
-	Jump_Mux jmpmux (PCSrc2, JumpAddress, PCSrc, Jump);
+	IsJr isjr (isJr, IF_ID_Func);
+	PC_MUX Jr_PCMux (PCSrc, PCplus4, Ra, isJr); 
+	PC_MUX Branch_PCMux (PCSrc1, PCSrc, EXE_BranchAddress, PC_Src); 
+	PC_MUX Jump_PCMux (PCSrc2, JumpAddress, PCSrc1, Jump);
 	PCAdder pcadd (PCplus4 , program_counter);
 	instructionMemory imem (instruction, program_counter);
 	
@@ -96,11 +97,11 @@ module Top (PC_value);
 	ZeroExtension ze (UnsignedImmediate, IF_ID_Immediate);
 	Ext_MUX extmux (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
 	RegisterFile regFile (ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, MEM_WB_DstReg, WB_Data, MEM_WB_RegWrite, MEM_WB_JmpandLink);//here
-	HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump, JmpandLink);
+	HazardDetectionUnit hd (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump, JmpandLink, isJr);
 	
 	ShiftLeft2 shiftleftjump (JumpShiftedAddress, IF_ID_Address);
 	Jumpj jump (JumpAddress, JumpShiftedAddress, IF_ID_PCplus4);
-	// floating register file
+	assign Ra = ReadData2;
 	
 	
 // ID_EXE_Register
@@ -147,36 +148,7 @@ module Top (PC_value);
 	
 endmodule
 
-module arethmatic1; 
-	reg [31:0]PC_VALUE_;		  
-	reg [31:0] cycle;
-	Top top(PC_VALUE_);
-	initial begin
-		PC_VALUE_ <= 320;	  
-		cycle <= 1;
-	end				   
-	always @(posedge top.clk) begin	
-	
-	if (cycle == 6)
-	begin
-		$display("cycle: %d" , cycle);
-		$display("PC: %d",top.program_counter);				   
-		$display("ALUOut_EXEC: %d" , top.ALUOut_EXEC);
-		$display("$s1: %d" , top.regFile.registers_i[19], " The correct value is 15");
-		$display("$s2: %d" , top.regFile.registers_i[20], " The correct value is 10");		
-		$display("$s3: %d" , top.regFile.registers_i[21], " The correct value is 3");		
-		$display("$s4: %d" , top.Op2Src, " The correct value is 2");
-		$display("$s5: %d" , top.Op2, " The correct value is 10");
-		$display("$s6: %b" , top.regFile.registers_i[24], " The correct value is 11");
-		
-		$finish;
-		end
-		
-		
-	cycle = cycle + 1;
-		
-	end
-endmodule
+
 
 
 
