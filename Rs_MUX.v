@@ -1,11 +1,11 @@
 module Rs_MUX (ID_Rs, ReadData1, FPReadData1, floatop);
 
 // input 
-	input [31:0] ReadData1, FPReadData1;
+	input [63:0] ReadData1, FPReadData1;
 	input floatop;
 	
 // output 
-	output reg [31:0] ID_Rs;
+	output reg [63:0] ID_Rs;
 	
 	always @(*)
 		begin
