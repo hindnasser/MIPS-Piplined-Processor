@@ -1,8 +1,8 @@
-module PC_MUX (PCSrc, PCplus4, Mem_BranchAddress, PC_Src);
+module PC_MUX (PCSrc, Src1, Src2, Signal);
 
 // input 
-	input [31:0] PCplus4, Mem_BranchAddress;
-	input PC_Src;
+	input [31:0] Src1, Src2;
+	input Signal;
 	//clk;
 	
 // output 
@@ -11,10 +11,10 @@ module PC_MUX (PCSrc, PCplus4, Mem_BranchAddress, PC_Src);
 		
 	always @(*)
 		begin
-			if(PC_Src == 1) 
-				PCSrc = Mem_BranchAddress;
+			if(Signal == 1) 
+				PCSrc = Src2;
 		   else
-				PCSrc = PCplus4;
+				PCSrc = Src1;
 		end
 		
 endmodule
