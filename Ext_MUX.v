@@ -1,11 +1,11 @@
 module Ext_MUX (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
 
 // input 
-	input [31:0] SignedImmediate, UnsignedImmediate;
+	input [63:0] SignedImmediate, UnsignedImmediate;
 	input Issigned;
 	
 // output
-	output reg [31:0] ExtendedImm;
+	output reg [63:0] ExtendedImm;
 	
 	always @(*)
 		begin

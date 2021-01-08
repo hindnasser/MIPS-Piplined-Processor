@@ -2,9 +2,9 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 //input
 	input [4:0] IF_ID_Rs, IF_ID_Rt, WB_DstReg;
 	input clk, RegWrite, MEM_WB_JmpandLink;
-	input [31:0] WB_Data;
+	input [63:0] WB_Data;
 //output	
-	output reg [31:0] ReadData1, ReadData2;
+	output reg [63:0] ReadData1, ReadData2;
 	
 //initializing registers
 	reg [31:0] registers_i[31:0];	
@@ -27,7 +27,7 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 				
 			else if(RegWrite && WB_DstReg!=0)
 				begin
-					registers_i[WB_DstReg] <= WB_Data;
+					registers_i[WB_DstReg] <= WB_Data[31:0];
 				end
 		end
 						
@@ -35,7 +35,9 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 	always @(negedge clk)
 		begin
 			ReadData1 <= registers_i[IF_ID_Rs];
+			ReadData1[63:32] <= 32'b0;
 			ReadData2 <= registers_i[IF_ID_Rt];
+		   ReadData2[63:32] <= 32'b0;
 		end
 			
 endmodule

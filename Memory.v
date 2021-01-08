@@ -1,11 +1,11 @@
 module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_Rt, MemRead, MemWrite, EXE_MEM_Byte, clk);
 
 //input
-	input [31:0] EXE_MEM_Result, EXE_MEM_Rt;
+	input [63:0] EXE_MEM_Result, EXE_MEM_Rt;
 	input MemRead, MemWrite, EXE_MEM_Byte, clk;
 	
 //output
-	output reg [31:0] MEM_Result;
+	output reg [63:0] MEM_Result;
 	
 	
 //Intitialization for the memory 
@@ -57,7 +57,7 @@ end
 				if(EXE_MEM_Byte)
 					MEM_Result <= {24'b0, mem[address+3]};
 				else
-					MEM_Result <= { mem[address], mem[address+1], mem[address+2], mem[address+3]};
+					MEM_Result <= {32'b0, mem[address], mem[address+1], mem[address+2], mem[address+3]};
 			end 
 end
 	

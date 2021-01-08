@@ -1,7 +1,7 @@
-module DstReg_MUX (EXE_DstReg, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RegDst);
+module DstRegMUX (EXE_DstReg, ID_EXE_Treg, ID_EXE_Dreg, ID_EXE_RegDst);
 
 // input 
-	input [4:0] ID_EXE_Rd, ID_EXE_Rt;
+	input [4:0] ID_EXE_Dreg, ID_EXE_Treg;
 	input ID_EXE_RegDst;
 	
 // output
@@ -10,9 +10,9 @@ module DstReg_MUX (EXE_DstReg, ID_EXE_Rt, ID_EXE_Rd, ID_EXE_RegDst);
 	always @(*)
 		begin
 			if(ID_EXE_RegDst == 0)
-				EXE_DstReg <= ID_EXE_Rt;
+				EXE_DstReg <= ID_EXE_Treg;
 			else if (ID_EXE_RegDst == 1)
-				EXE_DstReg <= ID_EXE_Rd;
+				EXE_DstReg <= ID_EXE_Dreg;
 		end
 		
 endmodule

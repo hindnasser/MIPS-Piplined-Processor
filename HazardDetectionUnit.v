@@ -1,4 +1,4 @@
-module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump, JmpandLink,, isJr);
+module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID_EXE_MemRead, ID_EXE_RtReg, PC_Src, Jump, JmpandLink, isJr);
 
 // input
 	input [4:0] IF_ID_Rs, IF_ID_Rt, ID_EXE_RtReg;
@@ -22,7 +22,7 @@ module HazardDetectionUnit (Stall, PC_Write, IF_ID_Write, IF_ID_Rs, IF_ID_Rt, ID
 					PC_Write <= 1;
 					IF_ID_Write <= 0;
 				end
-			else if(Jump || jmpandLink || isJr)
+			else if(Jump || JmpandLink || isJr)
 				begin
 					Stall <= 0;
 					PC_Write <= 1;

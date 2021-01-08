@@ -18,6 +18,7 @@ module ALUcontrol ( EXE_R_memtoReg, EXE_ReadfromMem, EXE_WritetoMem, operation, 
 					EXE_WritetoMem <= 0;
 					EXE_R_memtoReg <= 0;
 				end
+				
 			// Jump and Link
 			4'h7:
 				begin
@@ -54,7 +55,7 @@ module ALUcontrol ( EXE_R_memtoReg, EXE_ReadfromMem, EXE_WritetoMem, operation, 
 					EXE_R_memtoReg <= 0;
 				end
 				
-			// beq, bnq, 
+			// beq, bnq 
 			4'h7:
 				begin
 					operation <= 5'h5;
@@ -75,7 +76,14 @@ module ALUcontrol ( EXE_R_memtoReg, EXE_ReadfromMem, EXE_WritetoMem, operation, 
 			4'h2:
 				begin
 					case(funct)
-					
+						default:
+							begin
+								operation <= 0;
+								EXE_ReadfromMem <= 0;
+								EXE_WritetoMem <= 0;
+								EXE_R_memtoReg <= 0;
+							end
+						
 						// add
 						6'h20:
 							begin
