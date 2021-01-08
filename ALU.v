@@ -142,8 +142,8 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//FP Add single
 			5'hc:
 				begin
-					EXE_Result[63:32] <= 0;
-					Overflow <= 0;
+					EXE_Result[63:32] = 0;
+					Overflow = 0;
 					EXE_Zero = 0;
 					if(Op1[31]^Op2[31])//different signs
 					begin
@@ -165,9 +165,9 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 									EXE_Zero = 0;
 								end
 							if(EXE_Zero)
-								EXE_Result <= 0;
+								EXE_Result = 0;
 							else
-								EXE_Result[22:0] <= mantissa1;
+								EXE_Result[22:0] = mantissa1;
 						end
 						else if(Op1[30:23] < Op2[30:23])//Op2's exp is larger
 						begin
@@ -190,7 +190,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 							if(EXE_Zero)
 								EXE_Result = 0;
 							else
-								EXE_Result[22:0] <= mantissa1;
+								EXE_Result[22:0] = mantissa1;
 						end
 						else//same exp
 						begin
@@ -213,7 +213,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 								if(EXE_Zero)
 									EXE_Result = 0;
 								else
-									EXE_Result[22:0] <= mantissa1;
+									EXE_Result[22:0] = mantissa1;
 							end
 							else if(Op1[22:0] < Op2[22:0])//Op2's mantissa is bigger
 							begin
@@ -236,7 +236,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 								if(EXE_Zero)
 									EXE_Result = 0;
 								else
-									EXE_Result[22:0] <= mantissa1;
+									EXE_Result[22:0] = mantissa1;
 							end
 							else //same absolute numbers
 							begin
@@ -256,9 +256,9 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 							mantissa2 = {1'b1,Op2[22:0]}>>(Op1[30:23]-Op2[30:23]);
 							mantissa1 = mantissa1 + mantissa2;
 							// mantissa1[24] means overflow
-							EXE_Result[22:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[30:23] <= Op1[30:23]+mantissa1[24];
-							EXE_Result[31] <= Op1[31];
+							EXE_Result[22:0] = mantissa1>>mantissa1[24];
+							EXE_Result[30:23]= Op1[30:23]+mantissa1[24];
+							EXE_Result[31] = Op1[31];
 
 						end
 						else
@@ -269,9 +269,9 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 							mantissa2 = {1'b1,Op2[22:0]};
 							mantissa1 = mantissa1 + mantissa2;
 							// mantissa1[24] means overflow
-							EXE_Result[22:0] <= mantissa1>>mantissa1[24];
-							EXE_Result[30:23] <= Op2[30:23]+mantissa1[24];
-							EXE_Result[31] <= Op1[31];
+							EXE_Result[22:0] = mantissa1>>mantissa1[24];
+							EXE_Result[30:23]= Op2[30:23]+mantissa1[24];
+							EXE_Result[31] = Op1[31];
 						end
 					end
 				end	
@@ -279,7 +279,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//FP Add double
 			5'hd:
 				begin
-					Overflow <= 0;
+					Overflow = 0;
 					EXE_Zero = 0;
 					if(Op1[63]^Op2[63])//different signs
 					begin

@@ -8,13 +8,17 @@ module PC_MUX (PCSrc, Src1, Src2, Signal);
 // output 
 	output reg [31:0] PCSrc;
 		
+	initial
+		begin
+			PCSrc <= Src1;
+		end
 		
 	always @(*)
 		begin
 			if(Signal == 1) 
-				PCSrc = Src2;
+				PCSrc <= Src2;
 		   else
-				PCSrc = Src1;
+				PCSrc <= Src1;
 		end
 		
 endmodule

@@ -11,7 +11,7 @@ module readData_Mux (RegData, ReadData, FPReadData, floatop);
 		begin
 			if(floatop == 0)
 				RegData <= ReadData;
-			else if (floatop == 1)
+			else 
 				RegData <= FPReadData;
 		end
 		

@@ -1,15 +1,16 @@
-module MEM_WB_Register (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_FP_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_JmpandLink, EXE_MEM_JmpandLink,
-								MEM_Result, EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_FP_DstReg, MemtoRegIn, RegWriteIn, MEM_R_memtoReg, clk);
+module MEM_WB_Register (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_DstReg, MEM_WB_FP_DstReg, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_JmpandLink,
+								MEM_WB_LoHiWrite, EXE_MEM_LoHiWrite, EXE_MEM_JmpandLink, MEM_Result, EXE_MEM_Result, EXE_MEM_DstReg, EXE_MEM_FP_DstReg, MemtoRegIn, 
+								RegWriteIn, MEM_R_memtoReg, clk);
 
 // input
 	input [63:0] MEM_Result, EXE_MEM_Result;
 	input [4:0] EXE_MEM_DstReg, EXE_MEM_FP_DstReg;
-	input EXE_MEM_JmpandLink, MemtoRegIn, RegWriteIn, MEM_R_memtoReg, clk;
+	input EXE_MEM_JmpandLink, MemtoRegIn, RegWriteIn, MEM_R_memtoReg, EXE_MEM_LoHiWrite, clk;
 
 // output
 	output reg [63:0] MEM_WB_MemData, MEM_WB_ALUData;
 	output reg [4:0] MEM_WB_DstReg, MEM_WB_FP_DstReg;
-	output reg MEM_WB_JmpandLink, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_R_memtoReg;
+	output reg MEM_WB_JmpandLink, MEM_WB_MemtoReg, MEM_WB_RegWrite, MEM_WB_R_memtoReg, MEM_WB_LoHiWrite;
 	
 	always @(posedge clk)
 		begin
@@ -21,6 +22,7 @@ module MEM_WB_Register (MEM_WB_R_memtoReg, MEM_WB_MemData, MEM_WB_ALUData, MEM_W
 			MEM_WB_R_memtoReg <= MEM_R_memtoReg;
 			MEM_WB_JmpandLink <= EXE_MEM_JmpandLink;
 			MEM_WB_FP_DstReg <= EXE_MEM_FP_DstReg;
+			MEM_WB_LoHiWrite <= EXE_MEM_LoHiWrite;
 		end
 
 endmodule

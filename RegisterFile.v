@@ -23,7 +23,7 @@ module RegisterFile(ReadData1, ReadData2, clk, IF_ID_Rs, IF_ID_Rt, WB_DstReg, WB
 		begin
 		
 			if(RegWrite && MEM_WB_JmpandLink)
-				registers_i[31] <= WB_Data;
+				registers_i[31] <= WB_Data[31:0];
 				
 			else if(RegWrite && WB_DstReg!=0)
 				begin

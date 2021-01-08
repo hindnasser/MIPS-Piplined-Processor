@@ -12,8 +12,9 @@ module WB_MUX (WB_Data, MEM_WB_MemData, MEM_WB_ALUData, MEM_WB_MemtoReg);
 		begin
 			if(MEM_WB_MemtoReg == 0)
 				WB_Data <= MEM_WB_ALUData;
-			else if(MEM_WB_MemtoReg == 1)
+			else 
 				WB_Data <= MEM_WB_MemData;
+			
 		end
 		
 endmodule

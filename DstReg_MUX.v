@@ -11,7 +11,7 @@ module DstRegMUX (EXE_DstReg, ID_EXE_Treg, ID_EXE_Dreg, ID_EXE_RegDst);
 		begin
 			if(ID_EXE_RegDst == 0)
 				EXE_DstReg <= ID_EXE_Treg;
-			else if (ID_EXE_RegDst == 1)
+			else 
 				EXE_DstReg <= ID_EXE_Dreg;
 		end
 		

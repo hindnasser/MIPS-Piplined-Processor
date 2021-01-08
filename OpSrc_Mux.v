@@ -13,7 +13,7 @@ module OpSrc_MUX (OpSrc, Op1, Op2, ALUSrc);
 		begin
 			if(ALUSrc == 0)
 				OpSrc <= Op1;
-			if (ALUSrc == 1)
+			else
 				OpSrc <= Op2;
 		end
 		

@@ -11,7 +11,7 @@ module Ext_MUX (ExtendedImm, SignedImmediate, UnsignedImmediate, Issigned);
 		begin
 			if(Issigned == 0)
 				ExtendedImm <= UnsignedImmediate;
-			else if(Issigned == 1)
+			else 
 				ExtendedImm <= SignedImmediate;
 		end
 endmodule

@@ -1,19 +1,43 @@
-module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUop, ALUSrc,
-						  floatop, Issigned, OpCode, Stall);
+module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, BranchFPTrue, BranchFPFalse, ALUop, ALUSrc,
+						  floatop, Issigned, double, OpCode, Stall, fmt, ft);
 //input
 	input [5:0] OpCode;
 	input Stall;
+	input [4:0] fmt, ft;
 	
 //output	
-	output reg RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, Byte;
+	output reg RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, double,
+				  Byte, BranchFPFalse, BranchFPTrue;
 	output reg [3:0] ALUop;
 
+	initial 
+		begin
+			BranchFPFalse <= 0;
+			BranchFPTrue <= 0;
+			floatop <= 0;
+			RegDst <= 0; 
+			RegWrite <= 0;
+			MemtoReg <= 0;
+			Jump <= 0;
+			JmpandLink <= 0;
+			MemRead <= 0;
+			MemWrite <= 0;
+			BranchEqual <= 0;
+			BranchnotEqual <= 0;
+			ALUSrc <= 0;
+			Issigned <= 0;
+			Byte <= 0;
+			double <= 0;
+			ALUop <= 4'h0;
+		end
 	
 //check for the opCode in the instruction and assign the control signals
 	always @ (*) begin
 	
 		if(Stall == 1)
 			begin
+				BranchFPFalse <= 0;
+				BranchFPTrue <= 0;
 				floatop <= 0;
 				RegDst <= 0; 
 				RegWrite <= 0;
@@ -27,6 +51,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 				ALUSrc <= 0;
 				Issigned <= 0;
 				Byte <= 0;
+				double <= 0;
 				ALUop <= 4'h0;
 			end
 			
@@ -38,6 +63,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 					begin
 						floatop <= 0;
 						RegDst <= 0; 
+						double <= 0;
 						RegWrite <= 0;
 						MemtoReg <= 0;
 						Jump <= 0;
@@ -49,6 +75,8 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						ALUSrc <= 0;
 						Issigned <= 0;
 						Byte <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h0;
 					end
 					
@@ -57,6 +85,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 					begin
 						RegDst <= 0; 
 						RegWrite <= 1;
+						double <= 0;
 						MemtoReg <= 1;
 						Jump <= 0;
 						JmpandLink <= 0;
@@ -68,6 +97,8 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Issigned <= 1;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h4;
 					end
 					
@@ -76,6 +107,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 					begin
 						RegDst <= 0; 
 						RegWrite <= 1;
+						double <= 0;
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
@@ -87,6 +119,8 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Issigned <= 1;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'hb; //sll 16 for op2 
 					end
 					
@@ -98,6 +132,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 1;
 						Jump <= 0;
 						JmpandLink <= 0;
+						double <= 0;
 						MemRead <= 1;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -106,6 +141,8 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Issigned <= 1;
 						Byte <= 1;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h4;
 					end
 					
@@ -117,6 +154,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						double <= 0;
 						MemRead <= 0;
 						MemWrite <= 1;
 						BranchEqual <= 0;
@@ -125,6 +163,8 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Issigned <= 1;
 						Byte <= 1;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h4;
 					end
 						
@@ -134,15 +174,19 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						RegDst <= 0; 
 						RegWrite <= 0;
 						MemtoReg <= 0;
+						Jump <= 0;
 						JmpandLink <= 0;
 						MemRead <= 0;
 						MemWrite <= 1;
 						BranchEqual <=0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 1;
 						Issigned <= 1;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h4;
 					end
 					
@@ -157,11 +201,14 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
 						Issigned <= 0;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h2;
 					end
 					
@@ -176,11 +223,16 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 1;
 						Issigned <= 0;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h4;
 					end
 
@@ -195,11 +247,16 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 1;
 						Issigned <= 0;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h5;
 					end
 				
@@ -213,13 +270,16 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						JmpandLink <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
+						double <= 0;
 						BranchEqual <= 1;
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
 						Issigned <= 1;
 						Byte <= 0;
 						floatop <= 0;
-						ALUop <= 4'h7; // signed sub
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						ALUop <= 4'h7; 
 					end
 					
 				//Branch Not Equal
@@ -230,6 +290,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						double <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -238,6 +299,8 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Issigned <= 1;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h7;
 					end
 					
@@ -252,12 +315,15 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
 						Issigned <= 0;
 						Byte <= 0;
 						floatop <= 0;
-						ALUop <= 4'h4;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						ALUop <= 4'ha;
 					end
 						
 				//Jump
@@ -271,11 +337,14 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 0;
 						Issigned <= 0;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h0;
 					end
 						
@@ -290,31 +359,130 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 1;
 						Issigned <= 0;
 						Byte <= 0;
 						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h3;
 					end
 					
-				// FR instructions
+				// FR and FI instructions
 				6'h11:
 					begin
-						floatop <= 1;
-						RegDst <= 1; 
-						RegWrite <= 0;
-						MemtoReg <= 0;
-						Jump <= 0;
-						JmpandLink <= 0;
-						MemRead <= 0;
-						MemWrite <= 0;
-						BranchEqual <= 0;
-						BranchnotEqual <= 0;
-						ALUSrc <= 0;
-						Issigned <= 0;
-						Byte <= 0;
-						ALUop <= 4'ha;
+						case(fmt)
+							default:
+								begin
+									floatop <= 0;
+									RegDst <= 0; 
+									RegWrite <= 0;
+									MemtoReg <= 0;
+									Jump <= 0;
+									JmpandLink <= 0;
+									MemRead <= 0;
+									MemWrite <= 0;
+									BranchEqual <= 0;
+									BranchnotEqual <= 0;
+									ALUSrc <= 0;
+									Issigned <= 0;
+									Byte <= 0;
+									BranchFPFalse <= 0;
+									BranchFPTrue <= 0;
+									double <= 0;
+									ALUop <= 4'h0;
+								end
+								
+							// compare and add single
+							5'h10:
+								begin
+									floatop <= 1;
+									RegDst <= 1; 
+									RegWrite <= 0;
+									MemtoReg <= 0;
+									Jump <= 0;
+									JmpandLink <= 0;
+									MemRead <= 0;
+									MemWrite <= 0;
+									BranchEqual <= 0;
+									BranchnotEqual <= 0;
+									ALUSrc <= 0;
+									Issigned <= 0;
+									Byte <= 0;
+									BranchFPFalse <= 0;
+									BranchFPTrue <= 0;
+									double <= 0;
+									ALUop <= 4'h2;
+								end
+									
+							// compare and add double
+							5'h11:
+								begin
+									floatop <= 1;
+									RegDst <= 1; 
+									RegWrite <= 0;
+									MemtoReg <= 0;
+									Jump <= 0;
+									JmpandLink <= 0;
+									MemRead <= 0;
+									MemWrite <= 0;
+									BranchEqual <= 0;
+									BranchnotEqual <= 0;
+									ALUSrc <= 0;
+									Issigned <= 0;
+									Byte <= 0;
+									BranchFPFalse <= 0;
+									BranchFPTrue <= 0;
+									double <= 1;
+									ALUop <= 4'h2;
+								end
+								
+							//Branch FP on True and False
+							5'h8:
+								if(ft) // Branch on true
+									begin
+										RegDst <= 0; 
+										RegWrite <= 0;
+										MemtoReg <= 0;
+										Jump <= 0;
+										JmpandLink <= 0;
+										MemRead <= 0;
+										MemWrite <= 0;
+										double <= 0;
+										BranchEqual <= 0;
+										BranchnotEqual <= 0;
+										ALUSrc <= 0;
+										Issigned <= 1;
+										Byte <= 0;
+										floatop <= 0;
+										BranchFPFalse <= 0;
+										BranchFPTrue <= 1;
+										ALUop <= 4'h7; 
+									end
+									
+								else // Branch on false
+									begin
+										RegDst <= 0; 
+										RegWrite <= 0;
+										MemtoReg <= 0;
+										Jump <= 0;
+										JmpandLink <= 0;
+										MemRead <= 0;
+										MemWrite <= 0;
+										double <= 0;
+										BranchEqual <= 0;
+										BranchnotEqual <= 0;
+										ALUSrc <= 0;
+										Issigned <= 1;
+										Byte <= 0;
+										floatop <= 0;
+										BranchFPFalse <= 1;
+										BranchFPTrue <= 0;
+										ALUop <= 4'h7; 
+									end
+						endcase
 					end
 					
 				// FP load single
@@ -325,6 +493,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						RegWrite <= 1;
 						MemtoReg <= 1;
 						Jump <= 0;
+						double <= 0;
 						JmpandLink <= 0;
 						MemRead <= 1;
 						MemWrite <= 0;
@@ -333,9 +502,76 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						ALUSrc <= 1;
 						Issigned <= 1;
 						Byte <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
 						ALUop <= 4'h4;
 					end
 					
+				// FP load double
+				6'h35:
+					begin
+						floatop <= 1;
+						RegDst <= 0; 
+						RegWrite <= 1;
+						MemtoReg <= 1;
+						Jump <= 0;
+						double <= 1;
+						JmpandLink <= 0;
+						MemRead <= 1;
+						MemWrite <= 0;
+						BranchEqual <= 0;
+						BranchnotEqual <= 0;
+						ALUSrc <= 1;
+						Issigned <= 1;
+						Byte <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						ALUop <= 4'h4;
+					end
+					
+				// FP store single 
+				6'h39:
+					begin
+						RegDst <= 0; 
+						RegWrite <= 0;
+						MemtoReg <= 0;
+						Jump <= 0;
+						JmpandLink <= 0;
+						MemRead <= 0;
+						MemWrite <= 1;
+						BranchEqual <=0;
+						double <= 0;
+						BranchnotEqual <= 0;
+						ALUSrc <= 1;
+						Issigned <= 1;
+						Byte <= 0;
+						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						ALUop <= 4'h4;
+					end
+				
+				// FP store double 
+				6'h3d:
+					begin
+						RegDst <= 0; 
+						RegWrite <= 0;
+						MemtoReg <= 0;
+						Jump <= 0;
+						JmpandLink <= 0;
+						MemRead <= 0;
+						MemWrite <= 1;
+						BranchEqual <=0;
+						double <= 1;
+						BranchnotEqual <= 0;
+						ALUSrc <= 1;
+						Issigned <= 1;
+						Byte <= 0;
+						floatop <= 0;
+						BranchFPFalse <= 0;
+						BranchFPTrue <= 0;
+						ALUop <= 4'h4;
+					end
 				
 					
 				endcase 
