@@ -1,4 +1,4 @@
-moodule IsJr (isJr, IF_ID_Func);
+module IsJr (isJr, IF_ID_Func);
 
 // input
 	input [5:0] IF_ID_Func;
