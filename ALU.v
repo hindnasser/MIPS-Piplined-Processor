@@ -262,7 +262,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//Shift Right Arith
 			5'he:
 				begin
-					EXE_Result <= Op2 >>> shamt;
+					EXE_Result <= $signed(Op2) >>> shamt;
 					EXE_Zero <= 0;
 					Overflow <= 0;
 				end
