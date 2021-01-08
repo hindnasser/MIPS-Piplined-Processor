@@ -47,7 +47,8 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//signed addition
 			5'h3:
 				begin
-					EXE_Result <= Op1 + Op2;
+					EXE_Result[63:32] <= 0 ;
+					EXE_Result[31:0] <= $signed(Op1[31:0]) + $signed(Op2[31:0]);
 					EXE_Zero <= 0;
 				   // To detect overflow
 					if (Op1[31] == Op2[31] && EXE_Result[31] == Op1[31]) 
@@ -67,7 +68,8 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//Signed Subtract
 			5'h5:
 				begin
-					EXE_Result <= Op2 - Op1;
+					EXE_Result[63:32] <= 0;
+					EXE_Result[31:0] <= $signed(Op2[31:0]) - $signed(Op1[31:0]);
 					
 					//to detect overflow
 					if(Op2[31] != Op1[31] && EXE_Result[31]== Op1[31])
@@ -104,7 +106,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//Set less than
 			5'h8:
 				begin
-					if($signed (Op1) < $signed (Op2)) EXE_Result <= 1;
+					if($signed (Op1[31:0]) < $signed (Op2[31:0])) EXE_Result <= 1;
 					else EXE_Result <= 0; 
 					EXE_Zero <= 0;
 					Overflow <=0;
@@ -113,7 +115,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//Set less than unsigned
 			5'h9:
 				begin
-					if( Op1 < Op2) EXE_Result <= 1;
+					if( Op1[31:0] < Op2[31:0]) EXE_Result <= 1;
 					else EXE_Result <= 0;
 					EXE_Zero <= 0;
 					Overflow <=0;
@@ -130,7 +132,8 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//Passing rt for Jr
 			5'hb:
 				begin
-					EXE_Result <= Op2;
+					EXE_Result[63:32] <= 0;
+					EXE_Result[31:0] <= Op2[31:0];
 					EXE_Zero <= 0;
 					Overflow <=0;
 				end
@@ -138,6 +141,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//FP Add single
 			5'hc:
 				begin
+					EXE_Result[63:32] <= 0;
 					EXE_Zero <=0;
 					Overflow <=0;
 					if(Op1[31]^Op2[31])//different signs
@@ -262,7 +266,8 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 			//Shift Right Arith
 			5'he:
 				begin
-					EXE_Result <= $signed(Op2) >>> shamt;
+					EXE_Result[63:32] <= 0;
+					EXE_Result[31:0] <= $signed(Op2[31:0]) >>> shamt;
 					EXE_Zero <= 0;
 					Overflow <= 0;
 				end
