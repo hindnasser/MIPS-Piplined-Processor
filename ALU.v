@@ -2,8 +2,8 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 
 // input
 	input [63:0] Op1, Op2;
-	//note that Op1 takes : rs , ft
-	//	    Op2 takes : immediate , rt , fs
+	// note that Op1 takes : rs , ft
+	// Op2 takes : immediate , rt , fs
 	input [4:0] operation;
 	input [4:0] shamt;
 	//input clk;
@@ -15,6 +15,14 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 // intermediate stages
 	integer i;
 	reg [63:0] mantissa1,mantissa2;
+	
+	initial 
+		begin
+			mantissa1 = 0;
+			mantissa2 = 0;
+			i = 0;
+		end
+
 
 // cases
 
@@ -160,7 +168,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 							for (i = 52; i >= 0 && EXE_Zero; i = i-1)
 								if(mantissa1[i])
 								begin
-									mantissa1 = mantissa1<<(23-i);
+									mantissa1 = mantissa1 <<(23-i);
 									EXE_Result[30:23] = EXE_Result[30:23]-(23-i);
 									EXE_Zero = 0;
 								end
@@ -182,7 +190,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 							begin
 								if(mantissa1[i])
 								begin
-									mantissa1 = mantissa1<<(23-i);
+									mantissa1 =  (mantissa1<<(23-i));
 									EXE_Result[30:23] = EXE_Result[30:23]-(23-i);
 									EXE_Zero = 0;
 								end
@@ -206,7 +214,7 @@ module ALU (EXE_Result, EXE_Zero, Overflow, Op1, Op2, operation, shamt);
 								for (i = 52; i >= 0 && EXE_Zero; i = i-1)
 									if(mantissa1[i])
 									begin
-										mantissa1 = mantissa1<<(23-i);
+										mantissa1 = $signed (mantissa1<< (23-i));
 										EXE_Result[30:23] = EXE_Result[30:23]-(23-i);
 										EXE_Zero = 0;
 									end

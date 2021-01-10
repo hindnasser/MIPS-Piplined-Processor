@@ -30,10 +30,10 @@ module FP_RegisterFile (FPReadData1, FPReadData2, clk, fmt, FPReadRegister1, FPR
 					if(fmt == 5'h10)
 						registers_f[FPWriteRegister] <= FPWriteData[31:0];
 					else if(fmt == 5'h11)
-					begin
-						registers_f[FPWriteRegister] <= FPWriteData[31:0];
-						registers_f[FPWriteRegister+1] <= FPWriteData[63:32];
-					end
+						begin
+							registers_f[FPWriteRegister] <= FPWriteData[31:0];
+							registers_f[FPWriteRegister+1] <= FPWriteData[63:32];
+						end
 				end
 		end
 						

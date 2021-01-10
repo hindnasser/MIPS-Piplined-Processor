@@ -1,17 +1,19 @@
-module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, BranchFPTrue, BranchFPFalse, ALUop, ALUSrc,
+module ControlUnit (FPLoadStore, Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, BranchFPTrue, BranchFPFalse, ALUop, ALUSrc,
 						  floatop, Issigned, double, OpCode, Stall, fmt, ft);
-//input
+						  						  
+// input
 	input [5:0] OpCode;
 	input Stall;
 	input [4:0] fmt, ft;
 	
-//output	
+// output	
 	output reg RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead, MemWrite, BranchEqual, BranchnotEqual, ALUSrc, floatop, Issigned, double,
-				  Byte, BranchFPFalse, BranchFPTrue;
+				  Byte, BranchFPFalse, BranchFPTrue, FPLoadStore;
 	output reg [3:0] ALUop;
 
 	initial 
 		begin
+			FPLoadStore <= 0;
 			BranchFPFalse <= 0;
 			BranchFPTrue <= 0;
 			floatop <= 0;
@@ -36,6 +38,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 	
 		if(Stall == 1)
 			begin
+				FPLoadStore <= 0;
 				BranchFPFalse <= 0;
 				BranchFPTrue <= 0;
 				floatop <= 0;
@@ -65,6 +68,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						RegDst <= 0; 
 						double <= 0;
 						RegWrite <= 0;
+						FPLoadStore <= 0;
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
@@ -85,6 +89,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 					begin
 						RegDst <= 0; 
 						RegWrite <= 1;
+						FPLoadStore <= 0;
 						double <= 0;
 						MemtoReg <= 1;
 						Jump <= 0;
@@ -111,11 +116,12 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
 						BranchnotEqual <= 0;
-						ALUSrc <= 1; //extended
+						ALUSrc <= 1; //extended imm
 						Issigned <= 1;
 						Byte <= 0;
 						floatop <= 0;
@@ -132,6 +138,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 1;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						double <= 0;
 						MemRead <= 1;
 						MemWrite <= 0;
@@ -155,6 +162,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Jump <= 0;
 						JmpandLink <= 0;
 						double <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 1;
 						BranchEqual <= 0;
@@ -176,6 +184,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 1;
 						BranchEqual <=0;
@@ -198,6 +207,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -223,6 +233,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
+						FPLoadStore <= 0;
 						double <= 0;
 						BranchnotEqual <= 0;
 						ALUSrc <= 1;
@@ -244,6 +255,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -268,6 +280,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						double <= 0;
@@ -288,6 +301,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						RegDst <= 0; 
 						RegWrite <= 0;
 						MemtoReg <= 0;
+						FPLoadStore <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
 						double <= 0;
@@ -312,6 +326,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 1;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -334,6 +349,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 1;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -356,6 +372,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 0;
 						MemRead <= 0;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -382,6 +399,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 									MemtoReg <= 0;
 									Jump <= 0;
 									JmpandLink <= 0;
+									FPLoadStore <= 0;
 									MemRead <= 0;
 									MemWrite <= 0;
 									BranchEqual <= 0;
@@ -402,6 +420,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 									RegDst <= 1; 
 									RegWrite <= 0;
 									MemtoReg <= 0;
+									FPLoadStore <= 0;
 									Jump <= 0;
 									JmpandLink <= 0;
 									MemRead <= 0;
@@ -424,6 +443,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 									RegDst <= 1; 
 									RegWrite <= 0;
 									MemtoReg <= 0;
+									FPLoadStore <= 0;
 									Jump <= 0;
 									JmpandLink <= 0;
 									MemRead <= 0;
@@ -448,6 +468,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 										MemtoReg <= 0;
 										Jump <= 0;
 										JmpandLink <= 0;
+										FPLoadStore <= 0;
 										MemRead <= 0;
 										MemWrite <= 0;
 										double <= 0;
@@ -469,6 +490,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 										MemtoReg <= 0;
 										Jump <= 0;
 										JmpandLink <= 0;
+										FPLoadStore <= 0;
 										MemRead <= 0;
 										MemWrite <= 0;
 										double <= 0;
@@ -494,6 +516,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 1;
 						Jump <= 0;
 						double <= 0;
+						FPLoadStore <= 1;
 						JmpandLink <= 0;
 						MemRead <= 1;
 						MemWrite <= 0;
@@ -517,6 +540,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						Jump <= 0;
 						double <= 1;
 						JmpandLink <= 0;
+						FPLoadStore <= 1;
 						MemRead <= 1;
 						MemWrite <= 0;
 						BranchEqual <= 0;
@@ -535,6 +559,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						RegDst <= 0; 
 						RegWrite <= 0;
 						MemtoReg <= 0;
+						FPLoadStore <= 1;
 						Jump <= 0;
 						JmpandLink <= 0;
 						MemRead <= 0;
@@ -559,6 +584,7 @@ module ControlUnit (Byte, RegDst, RegWrite, MemtoReg, Jump, JmpandLink, MemRead,
 						MemtoReg <= 0;
 						Jump <= 0;
 						JmpandLink <= 0;
+						FPLoadStore <= 1;
 						MemRead <= 0;
 						MemWrite <= 1;
 						BranchEqual <=0;

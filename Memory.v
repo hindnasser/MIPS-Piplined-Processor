@@ -46,10 +46,10 @@ module DataMemory (MEM_Result, EXE_MEM_Result, EXE_MEM_TReg, MemRead, MemWrite, 
 						mem[address+2] <= EXE_MEM_TReg[15:8];
 						mem[address+1] <= EXE_MEM_TReg [23:16];
 						mem[address] <= EXE_MEM_TReg [31:24];
-						mem[address-1] <= EXE_MEM_TReg[39:32];
-						mem[address-2] <= EXE_MEM_TReg[47:40];
-						mem[address-3] <= EXE_MEM_TReg[55:48];
-						mem[address-4] <= EXE_MEM_TReg[63:56];
+						mem[address+7] <= EXE_MEM_TReg[39:32];
+						mem[address+6] <= EXE_MEM_TReg[47:40];
+						mem[address+5] <= EXE_MEM_TReg[55:48];
+						mem[address+4] <= EXE_MEM_TReg[63:56];
 					end
 					
 				else
@@ -67,9 +67,9 @@ end
 		if(MemRead == 1) 
 			begin
 				if(EXE_MEM_Byte)
-					MEM_Result <= {24'b0, mem[address+3]};
+					MEM_Result <= {56'b0, mem[address+3]};
 				else if(double)
-					MEM_Result <= {mem[address-4], mem[address-3],mem[address-2], mem[address-1], mem[address], mem[address+1], mem[address+2], mem[address+3]};
+					MEM_Result <= {mem[address+4], mem[address+5],mem[address+6], mem[address+7], mem[address], mem[address+1], mem[address+2], mem[address+3]};
 				else
 					MEM_Result <= {32'b0, mem[address], mem[address+1], mem[address+2], mem[address+3]};
 			end 
